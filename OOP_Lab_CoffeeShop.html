@@ -1,0 +1,2709 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OOP Lab — Coffee Shop API: ООП на PHP/Laravel с нуля</title>
+<style>
+  :root { --red: #6d4c41; --red-dark: #4e342e; --red-light: #efebe9; --red-mid: #d7ccc8; --ink: #1c1c1c; }
+  body { font-family: 'DejaVu Sans', 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--ink); }
+  h1 { font-size: 28px; color: var(--red); margin-bottom: 4px; }
+  .subtitle { font-size: 15px; color: #555; margin-top: 0; margin-bottom: 18px; }
+  h2 { font-size: 21px; color: var(--red-dark); border-bottom: 3px solid var(--red-mid); padding-bottom: 4px; margin-top: 44px; }
+  h3 { font-size: 16px; color: #333; margin-top: 24px; margin-bottom: 6px; }
+  h4 { font-size: 14px; color: #555; margin-top: 16px; margin-bottom: 4px; }
+  p { margin: 7px 0; }
+  code { background: #f5f2f0; padding: 1px 5px; border-radius: 3px; font-family: 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-size: 12.5px; }
+  pre { background: #faf8f6; border: 1px solid #dcd0ca; border-left: 4px solid var(--red); border-radius: 4px; padding: 10px 12px; font-family: 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-size: 12px; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px 0; font-size: 12.5px; }
+  th, td { border: 1px solid #ddd; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: var(--red-light); color: var(--red-dark); }
+  tr:nth-child(even) td { background: #fafafa; }
+  ul, ol { margin: 4px 0 10px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .tag { display: inline-block; color: #fff; font-size: 11px; font-weight: bold; padding: 1px 8px; border-radius: 3px; margin-bottom: 5px; }
+  .insight-box { background: var(--red-light); border: 1px solid var(--red-mid); border-left: 5px solid var(--red); border-radius: 4px; padding: 8px 14px; margin: 12px 0; }
+  .insight-box .tag { background: var(--red); }
+  .fix-box { background: #f1faf3; border: 1px solid #bfe4c7; border-left: 5px solid #2f9e4a; border-radius: 4px; padding: 8px 14px; margin: 6px 0 14px 0; }
+  .fix-box .tag { background: #2f9e4a; }
+  .note-box { background: #f4f4f6; border: 1px solid #d9d9e0; border-left: 5px solid #555a6e; border-radius: 4px; padding: 8px 14px; margin: 12px 0; }
+  .note-box .tag { background: #555a6e; }
+  .next-box { background: #fff8e6; border: 1px solid #f0dca0; border-left: 5px solid #e0a800; border-radius: 4px; padding: 8px 14px; margin: 14px 0 6px 0; font-size: 13px; }
+  .next-box .tag { background: #e0a800; color: #3a2a00; }
+  .next-box ul { margin: 4px 0 2px 0; }
+  details.deep { border: 1px dashed var(--red-mid); border-radius: 4px; margin: 12px 0; background: #fff; }
+  details.deep summary { cursor: pointer; padding: 8px 14px; font-weight: bold; color: var(--red-dark); background: #f3ede9; border-radius: 4px; list-style: none; }
+  details.deep summary::before { content: '▸ '; }
+  details.deep[open] summary::before { content: '▾ '; }
+  details.deep .deep-body { padding: 6px 16px 10px 16px; }
+  .toc { background: #f7f3f0; border: 1px solid #dcd0ca; border-radius: 6px; padding: 14px 20px; margin: 16px 0 24px 0; }
+  .toc ol { padding-left: 18px; }
+  .small { font-size: 12px; color: #777; }
+  .fnref { color: var(--red); font-weight: bold; font-size: 0.75em; }
+  .glossary-item { margin: 0 0 10px 0; padding-left: 24px; text-indent: -24px; }
+  .glossary-item b { color: var(--red-dark); }
+  .step { margin: 22px 0 10px 0; }
+  .step-head { display: block; background: var(--red-dark); color: #fff; padding: 6px 12px; border-radius: 4px 4px 0 0; font-weight: bold; font-size: 14px; }
+  .step-head .num { display: inline-block; background: #fff; color: var(--red-dark); padding: 0 8px; border-radius: 3px; margin-right: 8px; font-size: 12.5px; }
+  .step-body { border: 1px solid var(--red-mid); border-top: none; border-radius: 0 0 4px 4px; padding: 10px 14px; }
+  .step-body pre { margin: 8px 0; }
+  .why { background: #fff8e6; border-left: 4px solid #e0a800; padding: 6px 12px; margin: 10px 0 4px 0; font-size: 13px; }
+  .why b { color: #8a6500; }
+  .file { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 12px; color: var(--red-dark); background: #fdecea; padding: 1px 6px; border-radius: 3px; }
+  .session-banner { background: linear-gradient(90deg, var(--red-dark), var(--red)); color: #fff; padding: 10px 16px; border-radius: 6px; margin: 28px 0 12px 0; font-size: 17px; font-weight: bold; }
+  .session-banner span { font-weight: normal; font-size: 12px; opacity: 0.9; margin-left: 10px; }
+  .page-break { display: none; }
+  .life { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 12px; }
+
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #fff; }
+  .layout { display: flex; align-items: flex-start; }
+  .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; width: 300px; flex: 0 0 300px; background: var(--red-dark); color: #fff; padding: 52px 12px 16px 12px; box-sizing: border-box; font-size: 12.5px; transition: margin-left .2s; }
+  body.nav-collapsed .sidebar { margin-left: -300px; }
+  .sidebar .nav-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 8px; }
+  .sidebar ul { list-style: none; padding-left: 0; margin: 0; }
+  .sidebar li { margin: 1px 0; }
+  .sidebar a { color: #fff; text-decoration: none; display: block; padding: 4px 8px; border-radius: 4px; }
+  .sidebar a:hover { background: #fff; color: var(--red-dark); }
+  .sidebar .nav-steps { padding-left: 8px; border-left: 2px solid rgba(255,255,255,.4); margin: 4px 0 6px 8px; }
+  .sidebar .nav-steps a { font-size: 11.5px; color: #e6d9d2; }
+  .sidebar .nav-steps a:hover { color: var(--red-dark); }
+  .sidebar .nav-session a { color: #fff; font-weight: bold; margin-top: 6px; background: rgba(255,255,255,.12); }
+  .sidebar a .mark { display: inline-block; width: 14px; color: #fff; font-weight: bold; }
+  .sidebar a.done { opacity: .75; }
+  .sidebar a.done .mark::before { content: '✓'; }
+  .sidebar .progress { margin: 6px 0 12px 0; }
+  .sidebar .bar { height: 8px; background: rgba(255,255,255,.25); border-radius: 4px; overflow: hidden; }
+  .sidebar .fill { height: 100%; width: 0; background: #fff; transition: width .3s; }
+  .sidebar .ptext { font-size: 11px; margin-top: 4px; color: #e6d9d2; }
+  .sidebar .reset { margin-top: 16px; background: transparent; border: 1px solid rgba(255,255,255,.5); color: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+  .sidebar .reset:hover { background: #fff; color: var(--red-dark); }
+  #nav-toggle { position: fixed; top: 10px; left: 10px; z-index: 20; background: var(--red); color: #fff; border: none; border-radius: 6px; width: 38px; height: 34px; font-size: 20px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  #nav-toggle:hover { background: var(--red-dark); }
+  main { flex: 1; max-width: 960px; padding: 24px 44px 90px 44px; box-sizing: border-box; min-width: 0; }
+  body.nav-collapsed main { padding-left: 64px; }
+  h2, .step, .glossary-item, .session-banner { scroll-margin-top: 16px; }
+  a { color: var(--red); }
+  a.anchor { color: #bcaaa4; text-decoration: none; margin-left: 6px; font-weight: normal; font-size: 0.8em; opacity: 0; }
+  h2:hover a.anchor, .step-head:hover a.anchor { opacity: 1; }
+  .step-head a.anchor { color: #fff; float: right; }
+  a.fnref { text-decoration: none; vertical-align: super; padding: 0 2px; }
+  a.fnref:hover { background: var(--red-light); border-radius: 3px; }
+  a.back { text-decoration: none; font-size: 0.9em; color: #a1887f; margin-left: 4px; }
+  .glossary-item:target, .step:target { outline: 2px solid var(--red); outline-offset: 4px; border-radius: 4px; }
+  h2:target { background: var(--red-light); }
+  .done-label { display: inline-block; margin-right: 8px; vertical-align: middle; }
+  .done-label input { width: 18px; height: 18px; accent-color: var(--red); cursor: pointer; vertical-align: middle; }
+  .step-head .done-label input { accent-color: #fff; }
+  h2.is-done { color: #999; border-bottom-color: #ddd; }
+  .step.is-done .step-head { background: #9e9e9e; }
+  .step.is-done .step-body { border-color: #ddd; }
+  .totop { position: fixed; right: 24px; bottom: 24px; background: var(--red); color: #fff; text-decoration: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+  @media (max-width: 900px) { .sidebar { position: fixed; z-index: 10; } main { padding: 56px 16px 60px 16px; } body.nav-collapsed main { padding-left: 16px; } }
+  @media print { .sidebar, .totop, #nav-toggle, a.anchor, a.back, .done-label { display: none; } .layout { display: block; } main { max-width: none; padding: 0; } a { color: inherit; text-decoration: none; } details.deep { border: none; } details.deep summary { display: none; } details.deep .deep-body { display: block; } }
+</style>
+</head>
+<body id="top">
+<button id="nav-toggle">✕</button>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+<div class="nav-title">☕ OOP Lab — Coffee Shop</div>
+<div class="progress"><div class="bar"><div class="fill" id="progress-fill"></div></div><div class="ptext" id="progress-text">0 / 0</div></div>
+<ul>
+<li><a href="#sec-1" data-key="sec-1"><span class="mark"></span>1. Зачем ООП</a>
+</li>
+<li><a href="#sec-2" data-key="sec-2"><span class="mark"></span>2. Азбука ООП в PHP</a>
+</li>
+<li><a href="#sec-3" data-key="sec-3"><span class="mark"></span>3. Четыре принципа</a>
+</li>
+<li><a href="#sec-4" data-key="sec-4"><span class="mark"></span>4. Абстрактный класс vs интерфейс</a>
+</li>
+<li><a href="#sec-5" data-key="sec-5"><span class="mark"></span>5. Наследование vs композиция</a>
+</li>
+<li><a href="#sec-6" data-key="sec-6"><span class="mark"></span>6. Паттерны</a>
+</li>
+<li><a href="#sec-7" data-key="sec-7"><span class="mark"></span>7. Архитектура проекта</a>
+</li>
+<li><a href="#sec-8" data-key="sec-8"><span class="mark"></span>8. SOLID</a>
+</li>
+<li><a href="#sec-9" data-key="sec-9"><span class="mark"></span>9. Задания (5 сессий)</a>
+<ul class="nav-steps">
+<li class="nav-session"><a href="#session-1">Сессия 1</a></li>
+<li><a href="#step-1-1" data-key="step-1-1"><span class="mark"></span>1.1 Стенд</a></li>
+<li><a href="#step-1-2" data-key="step-1-2"><span class="mark"></span>1.2 Касса на массивах</a></li>
+<li><a href="#step-1-3" data-key="step-1-3"><span class="mark"></span>1.3 Первый объект: Money</a></li>
+<li><a href="#step-1-4" data-key="step-1-4"><span class="mark"></span>1.4 abstract Drink + enum + полиморфизм</a></li>
+<li><a href="#step-1-5" data-key="step-1-5"><span class="mark"></span>1.5 Заказ с инвариантами</a></li>
+<li class="nav-session"><a href="#session-2">Сессия 2</a></li>
+<li><a href="#step-2-1" data-key="step-2-1"><span class="mark"></span>2.1 Money + первый тест</a></li>
+<li><a href="#step-2-2" data-key="step-2-2"><span class="mark"></span>2.2 Drink и наследники</a></li>
+<li><a href="#step-2-3" data-key="step-2-3"><span class="mark"></span>2.3 Фабрика DrinkType + /api/menu</a></li>
+<li class="nav-session"><a href="#session-3">Сессия 3</a></li>
+<li><a href="#step-3-1" data-key="step-3-1"><span class="mark"></span>3.1 Интерфейс Beverage</a></li>
+<li><a href="#step-3-2" data-key="step-3-2"><span class="mark"></span>3.2 Decorator: добавки</a></li>
+<li><a href="#step-3-3" data-key="step-3-3"><span class="mark"></span>3.3 Сущность Order + OrderStatus</a></li>
+<li><a href="#step-3-4" data-key="step-3-4"><span class="mark"></span>3.4 Repository + POST /api/orders</a></li>
+<li class="nav-session"><a href="#session-4">Сессия 4</a></li>
+<li><a href="#step-4-1" data-key="step-4-1"><span class="mark"></span>4.1 DiscountPolicy + Clock</a></li>
+<li><a href="#step-4-2" data-key="step-4-2"><span class="mark"></span>4.2 Checkout + PaymentMethod + /pay</a></li>
+<li><a href="#step-4-3" data-key="step-4-3"><span class="mark"></span>4.3 Тесты стратегий</a></li>
+<li><a href="#step-4-4" data-key="step-4-4"><span class="mark"></span>4.4 Эксперимент: наследованием</a></li>
+<li class="nav-session"><a href="#session-5">Сессия 5</a></li>
+<li><a href="#step-5-1" data-key="step-5-1"><span class="mark"></span>5.1 EventPublisher + order.paid</a></li>
+<li><a href="#step-5-2" data-key="step-5-2"><span class="mark"></span>5.2 Воркеры + Notifier</a></li>
+<li><a href="#step-5-3" data-key="step-5-3"><span class="mark"></span>5.3 Сквозной тест без БД и брокера</a></li>
+<li><a href="#step-5-4" data-key="step-5-4"><span class="mark"></span>5.4 Финал: до / после</a></li>
+</ul>
+</li>
+<li><a href="#sec-10" data-key="sec-10"><span class="mark"></span>10. Чек-лист принципов</a>
+</li>
+<li><a href="#sec-11" data-key="sec-11"><span class="mark"></span>11. Глоссарий</a>
+</li>
+<li><a href="#sec-12" data-key="sec-12"><span class="mark"></span>12. Вопросы на понимание</a>
+</li>
+<li><a href="#sec-13" data-key="sec-13"><span class="mark"></span>13. Что дальше</a>
+</li>
+</ul><button class="reset" id="reset-progress" title="Сбросить все галочки">Сбросить прогресс</button></nav>
+<main>
+
+<h1>☕ OOP Lab — Coffee Shop API</h1>
+<p class="subtitle">Объектно-ориентированное программирование на PHP 8.4 / Laravel 13 — с нуля, на маленьком API кофейни. Money, напитки, добавки-декораторы, скидки и оплаты-стратегии, RabbitMQ-воркеры бариста и уведомлений, тесты без базы и брокера.</p>
+
+<div class="toc"><b>Как устроена лаба.</b> Разделы 1–8 — теория: от «зачем вообще объекты» до паттернов и SOLID, каждый пункт на примере кофейни. Раздел 9 — пять сессий заданий: сначала чистый PHP без фреймворка (чтобы увидеть ООП без магии Laravel), потом домен, API, стратегии, воркеры на RabbitMQ и тесты. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя». Разделы 10–13 — чек-лист, глоссарий, вопросы, что дальше. Галочки сохраняются в браузере.
+<p class="small">Отдельный репозиторий, ни от чего не зависит. Стек — как в RabbitMQ Lab: Laravel 13 (PHP 8.4), PostgreSQL, RabbitMQ с Management UI, Mailpit, всё в Docker. Брокер появляется только в сессии 5 и делает ровно то, что вы уже умеете: один topic-exchange, две очереди, воркеры как Artisan-команды.</p></div>
+
+<h2 id="sec-1"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-1"></label>1. Зачем вообще ООП: массив с функциями vs объект <a class="anchor" href="#sec-1">#</a></h2>
+
+<p>Представьте кассу кофейни без объектов. Заказ — массив, цена считается функцией:</p>
+<pre><code>$item = ['drink' =&gt; 'latte', 'size' =&gt; 'L', 'extras' =&gt; ['oat', 'shot'], 'qty' =&gt; 2];
+
+function itemPrice(array $item): int
+{
+    $base = match ($item['drink']) { 'espresso' =&gt; 150, 'latte' =&gt; 250, 'cappuccino' =&gt; 230 };
+    $size = match ($item['size'])  { 'S' =&gt; 0, 'M' =&gt; 40, 'L' =&gt; 80 };
+    $extras = 0;
+    foreach ($item['extras'] as $e) { $extras += match ($e) { 'oat' =&gt; 60, 'shot' =&gt; 70, 'vanilla' =&gt; 40 }; }
+    return ($base + $size + $extras) * $item['qty'];
+}</code></pre>
+
+<p>Работает. Теперь пять вопросов, на которые этот код отвечает плохо:</p>
+<table>
+<tr><th>Вопрос</th><th>Что происходит с массивом</th><th>Что даёт объект</th></tr>
+<tr><td>Опечатка: <code>'drink' =&gt; 'late'</code></td><td><code>UnhandledMatchError</code> в момент расчёта — далеко от места, где заказ создали</td><td><code>new Latte(Size::Large)</code> — класса <code>Late</code> нет, ошибка на этапе написания кода, IDE подчеркнёт</td></tr>
+<tr><td>Эспрессо «большим» не бывает</td><td>нужен <code>if</code> где-то… где? В <code>itemPrice</code>? В контроллере? В обоих?</td><td>конструктор <code>Espresso</code> сам отказывается создавать такой объект — проверка <b>в одном месте</b>, обойти нельзя</td></tr>
+<tr><td>Количество = −3</td><td>цена отрицательная, никто не заметил</td><td><code>$order-&gt;add($latte, -3)</code> бросает исключение — объект защищает своё состояние</td></tr>
+<tr><td>Добавить напиток «чай», у которого нет размеров, но есть время заваривания</td><td>ещё ветка в <code>match</code>, ещё <code>if</code> в размерах, и все функции, где встречается <code>'drink'</code></td><td>новый класс <code>Tea extends Drink</code>; старый код не трогаем</td></tr>
+<tr><td>Оплатить заказ: наличные, карта, бонусы</td><td><code>switch ($method)</code> в контроллере; тестировать — только с настоящим шлюзом</td><td>три класса, реализующих <code>PaymentMethod</code>; в тесте подставляем четвёртый, поддельный</td></tr>
+</table>
+<p>Общий знаменатель: у массива <b>нет поведения и нет гарантий</b>. Он хранит что угодно, и вся логика живёт снаружи — в функциях, которые надо не забыть вызвать. Объект — это данные <i>плюс</i> код, который единственный имеет право их менять. ООП начинается ровно здесь: когда вы говорите «пусть заказ сам знает, что с ним можно делать».</p>
+<div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>ООП — не «классы вместо функций» и не «паттерны, чтобы было красиво». Это способ провести <b>границы</b>: что снаружи (контракт — то, что объект обещает), что внутри (реализация — то, как он это делает), кто кого знает и кого можно заменить. Каждое задание — про одну такую границу. К концу у вас будет ~30 маленьких классов, и каждый будет отвечать на вопрос «за что я отвечаю» одной фразой.</p></div>
+<div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-2">2</a></span><ul>
+<li>📖 Пробежаться: <a href="https://www.php.net/manual/ru/language.oop5.basic.php" target="_blank">PHP: Основы классов</a> — только чтобы глаз привык к синтаксису; объяснение будет в разделе 2.</li>
+</ul></div>
+
+<h2 id="sec-2"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-2"></label>2. Азбука ООП в PHP — каждое слово на примере кофейни <a class="anchor" href="#sec-2">#</a></h2>
+
+<p>Тринадцать понятий, без которых не прочитать ни одного класса. Каждое — определение в одну строку и три-пять строк кода. Не пытайтесь запомнить всё сразу: в сессии 1 вы напишете это руками, и тогда сложится.</p>
+
+<h3>2.1 Класс и объект</h3>
+<p><b>Класс</b> — описание: какие данные и какое поведение. <b>Объект</b> (экземпляр) — конкретная вещь, созданная по этому описанию через <code>new</code>. Класс <code>Latte</code> один; объектов-латте — сколько заказали.</p>
+<pre><code>class Latte {}                      // описание (пока пустое)
+$a = new Latte();                   // объект №1
+$b = new Latte();                   // объект №2 — другой, хотя класс тот же
+var_dump($a === $b);                // false: объекты сравниваются по идентичности, не по содержимому</code></pre>
+
+<h3>2.2 Свойство и метод</h3>
+<p><b>Свойство</b> — переменная, живущая внутри объекта (его состояние). <b>Метод</b> — функция, живущая внутри объекта (его поведение). <code>$this</code> — «тот объект, у которого вызвали метод».</p>
+<pre><code>class Latte
+{
+    public string $size = 'M';                       // свойство с значением по умолчанию
+
+    public function price(): int                     // метод
+    {
+        return 250 + ($this-&gt;size === 'L' ? 80 : 0); // $this-&gt;size — свойство ЭТОГО объекта
+    }
+}
+$l = new Latte();  $l-&gt;size = 'L';  echo $l-&gt;price();   // 330</code></pre>
+
+<h3>2.3 Конструктор и promotion</h3>
+<p><b>Конструктор</b> <code>__construct</code> вызывается при <code>new</code> и приводит объект в корректное начальное состояние. Если объект не может существовать без размера — размер обязателен в конструкторе, а не «потом присвоим». <b>Promotion</b> (PHP 8): параметр конструктора с модификатором видимости сразу становится свойством.</p>
+<pre><code>class Latte
+{
+    public function __construct(private string $size) {}   // = объявить private string $size + $this-&gt;size = $size
+}
+$l = new Latte('L');          // размер задан один раз, при рождении объекта
+$l = new Latte();             // ArgumentCountError — без размера латте не бывает</code></pre>
+
+<h3>2.4 Видимость: public / protected / private</h3>
+<p><code>public</code> — доступно всем. <code>private</code> — только коду <i>этого класса</i>. <code>protected</code> — этому классу и его наследникам. Правило: <b>по умолчанию <code>private</code></b>; открывайте только то, что действительно нужно снаружи.</p>
+<pre><code>class Order
+{
+    private array $lines = [];                        // снаружи не видно и не изменить
+
+    public function add(string $drink, int $qty): void
+    {
+        if ($qty &lt; 1) { throw new InvalidArgumentException('qty must be &gt;= 1'); }
+        $this-&gt;lines[] = [$drink, $qty];              // единственный способ попасть внутрь — через проверку
+    }
+}
+$o = new Order();  $o-&gt;add('latte', 2);
+$o-&gt;lines[] = ['latte', -5];                          // Error: Cannot access private property Order::$lines</code></pre>
+
+<h3>2.5 Типы</h3>
+<p>Типы параметров, возвращаемых значений и свойств — это <b>часть контракта</b>. <code>function add(Beverage $b, int $qty): void</code> говорит: «сюда можно передать только напиток и целое число, назад ничего не вернётся». PHP проверит это при вызове. Объявите <code>declare(strict_types=1)</code> в начале файла — иначе <code>'2'</code> тихо превратится в <code>2</code>.</p>
+
+<h3>2.6 readonly и неизменяемость</h3>
+<p><code>readonly</code>-свойство можно записать один раз — в конструкторе. Объект, у которого все свойства readonly, после создания не меняется; любое «изменение» — это новый объект. Так устроены деньги, даты, размеры: <code>$price-&gt;add($tax)</code> возвращает новую сумму, старая остаётся прежней.</p>
+<pre><code>final readonly class Money
+{
+    public function __construct(public int $cents) {}
+    public function add(Money $other): Money { return new Money($this-&gt;cents + $other-&gt;cents); }   // новый объект
+}
+$a = new Money(250);  $b = $a-&gt;add(new Money(80));
+echo $a-&gt;cents;        // 250 — не изменился
+$a-&gt;cents = 999;       // Error: Cannot modify readonly property Money::$cents</code></pre>
+
+<h3>2.7 static, self, const</h3>
+<p><b>Статический</b> метод/свойство принадлежит классу, а не объекту: вызывается <code>Money::rub(250)</code>, без <code>new</code>. Типичное применение — <i>именованные конструкторы</i> (фабрики): <code>Money::rub()</code>, <code>Money::fromCents()</code>. <code>self</code> — «этот класс» внутри его кода. <code>const</code> — константа класса.</p>
+<pre><code>final readonly class Money
+{
+    private const int CENTS_PER_RUB = 100;                       // typed constant — PHP 8.3
+    private function __construct(public int $cents) {}           // private: снаружи создаём только через фабрики
+    public static function rub(int $rubles): self { return new self($rubles * self::CENTS_PER_RUB); }
+}
+$m = Money::rub(250);            // читается лучше, чем new Money(25000)</code></pre>
+
+<h3>2.8 Наследование: extends, parent, abstract, final</h3>
+<p><code>class Latte extends Drink</code> — латте получает всё, что есть у <code>Drink</code>, и может добавить своё или переопределить. <code>parent::</code> — обратиться к версии родителя. <code>abstract</code> класс нельзя создать через <code>new</code> — он только заготовка; <code>abstract</code> метод — «ребёнок обязан реализовать». <code>final</code> — «наследовать / переопределять нельзя». Подробно — раздел 3.</p>
+
+<h3>2.9 Интерфейс: implements</h3>
+<p>Интерфейс — список методов без тел. <code>class CashPayment implements PaymentMethod</code> обещает: «у меня есть все методы из <code>PaymentMethod</code>». Класс может реализовать много интерфейсов. Интерфейс — это тип: <code>function pay(PaymentMethod $m)</code> примет любой класс, который его реализует. Подробно — раздел 4.</p>
+
+<h3>2.10 Enum</h3>
+<p><code>enum</code> — тип с конечным набором значений. Вместо строки <code>'L'</code>, которая может быть <code>'l'</code>, <code>'XL'</code> или опечаткой, — <code>Size::Large</code>, других значений не существует. У enum могут быть методы: <code>Size::Large-&gt;surcharge()</code>.</p>
+<pre><code>enum Size: string
+{
+    case Small = 'S';  case Medium = 'M';  case Large = 'L';
+
+    public function surcharge(): int { return match ($this) { self::Small =&gt; 0, self::Medium =&gt; 40, self::Large =&gt; 80 }; }
+}
+Size::from('L')-&gt;surcharge();     // 80;  Size::from('XL') → ValueError</code></pre>
+
+<h3>2.11 Исключения</h3>
+<p>Исключение — способ объекта сказать «в этом состоянии я это сделать не могу» так, чтобы вызывающий код <b>не мог проигнорировать</b>. <code>DomainException</code> — нарушено бизнес-правило (нет товара, заказ уже оплачен); <code>InvalidArgumentException</code> — передали ерунду (qty = −1). Свои исключения — это тоже классы: <code>final class PaymentFailed extends DomainException</code>.</p>
+
+<h3>2.12 Замыкания и first-class callable</h3>
+<p>Функция как значение: <code>$fn = fn (Money $m) =&gt; $m-&gt;add(...)</code>. <code>$order-&gt;add(...)</code> (три точки) — метод объекта, превращённый в замыкание. Понадобится в сессии 4, чтобы обернуть метод в объект-стратегию.</p>
+
+<h3>2.13 Композиция: объект внутри объекта</h3>
+<p>Самая частая связь между классами — не наследование, а <b>«содержит»</b>: заказ содержит строки, строка содержит цену, касса содержит политику скидок. Объект получает другие объекты в конструктор и вызывает их методы. Половина лабы — про то, когда выбирать композицию, а когда наследование (раздел 5).</p>
+<div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-3">3</a></span><ul>
+<li>✅ Если хочется потрогать прямо сейчас — сессия 1 в разделе 9 начинается с чистого PHP без Laravel и повторяет ровно эти 13 пунктов кодом. Можно прочитать разделы 3–8 после неё.</li>
+</ul></div>
+
+<h2 id="sec-3"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-3"></label>3. Четыре принципа ООП — на кофейне <a class="anchor" href="#sec-3">#</a></h2>
+
+<p>По каждому: бытовое определение, где он в проекте, как выглядит нарушение, типичная ошибка новичка.</p>
+
+<h3>3.1 Абстракция — «что», а не «как»</h3>
+<p><b>Определение.</b> Выделить существенное и спрятать остальное. Абстракция — это <i>контракт</i>: что объект обещает, без указания, как он это делает.</p>
+<p><b>В проекте.</b> Интерфейс <code>Beverage { name(); price(); }</code>. Кассе всё равно, латте это, чай или латте с двумя сиропами и овсяным молоком — она зовёт <code>price()</code>. <code>PaymentMethod { charge() }</code> — контроллер оплаты не знает, наличные это или карта.</p>
+<p><b>Нарушение.</b> Касса знает конкретику: <code>if ($b instanceof Latte &amp;&amp; $b-&gt;hasOatMilk())</code>. Теперь новый напиток требует править кассу.</p>
+<p><b>Ошибка новичка.</b> Абстракция ради абстракции: интерфейс с 12 методами, из которых нужны 2. Хорошая абстракция маленькая: <code>Beverage</code> — два метода.</p>
+
+<h3>3.2 Инкапсуляция — защита инвариантов</h3>
+<p><b>Определение.</b> Данные и код, который их меняет, живут вместе; снаружи доступно только безопасное. Цель — чтобы объект <b>нельзя было привести в некорректное состояние</b>.</p>
+<p><b>В проекте.</b> <code>Order</code>: строки заказа <code>private</code>; добавить можно только через <code>add()</code>, который проверяет количество и статус; оплатить пустой заказ нельзя; после оплаты добавить нельзя. Инварианты («оплаченный заказ не меняется», «сумма ≥ 0», «эспрессо не бывает большим») живут в одном месте — в классе.</p>
+<p><b>Нарушение.</b> Геттер + сеттер на каждое поле: <code>setStatus('paid')</code> — и любой контроллер переведёт заказ в любой статус, минуя проверки. Это <i>публичное поле с лишним синтаксисом</i>, а не инкапсуляция.</p>
+<p><b>Ошибка новичка.</b> Считать, что <code>private</code> — «для приличия». Нет: каждое <code>private</code> — гарантия, которую можно не проверять снаружи.</p>
+
+<h3>3.3 Наследование — «является» и общий скелет</h3>
+<p><b>Определение.</b> Потомок получает члены родителя, добавляет своё, переопределяет нужное. Семантика: потомок <i>является</i> частным случаем родителя.</p>
+<p><b>В проекте.</b> <code>abstract class Drink</code> знает, как складывать базовую цену с надбавкой за размер и как собирать название; <code>Latte</code>, <code>Espresso</code>, <code>Tea</code> знают только свою цену и своё название. Общий код — один раз. <code>AbstractAmqpWorker</code> в сессии 5 — то же самое для воркеров.</p>
+<p><b>Нарушение.</b> Наследование ради кода, а не смысла: <code>class Order extends Money</code>, чтобы «у заказа была сумма». Заказ не <i>является</i> деньгами. Или лестницы: <code>LatteWithOatMilk extends Latte</code>, <code>LatteWithOatMilkAndShot extends LatteWithOatMilk</code>… — сессия 3 покажет, во что это превращается.</p>
+<p><b>Ошибка новичка.</b> Глубокие иерархии. Два уровня — почти всегда потолок.</p>
+
+<h3>3.4 Полиморфизм — один вызов, много поведений</h3>
+<p><b>Определение.</b> Код работает через общий контракт и не знает конкретной реализации; поведение выбирается по реальному типу объекта во время выполнения — без <code>if/switch</code> у вызывающего.</p>
+<p><b>В проекте.</b> <code>foreach ($menu as $drink) echo $drink-&gt;price()</code> — четыре класса, одна строка. <code>$this-&gt;discount-&gt;discountFor($order)</code> — касса не знает, «10 % всем» это или «−20 % в happy hour». <code>$method-&gt;charge()</code> — наличные или карта.</p>
+<p><b>Нарушение.</b> <code>match ($drink-&gt;type) { 'latte' =&gt; 250, 'tea' =&gt; 120 }</code> вне класса — «полиморфизм на if'ах». Новый напиток = править все такие <code>match</code> в проекте.</p>
+<p><b>Ошибка новичка.</b> Думать, что полиморфизм — только про наследование. Через интерфейс он даже сильнее: <code>Cash</code>, <code>Card</code> и поддельный шлюз в тесте не родственники, но взаимозаменяемы.</p>
+<div class="insight-box"><span class="tag">ЧЕТЫРЕ ПРИНЦИПА — ОДНА ИДЕЯ С ЧЕТЫРЁХ СТОРОН</span><p><b>Абстракция</b> задаёт контракт → <b>инкапсуляция</b> прячет всё, что не контракт → <b>полиморфизм</b> позволяет подставлять разные реализации → <b>наследование</b> — один из способов эти реализации получать (второй — композиция, и он в лабе будет встречаться чаще).</p></div>
+
+<h2 id="sec-4"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-4"></label>4. Абстрактный класс / интерфейс / трейт / enum <a class="anchor" href="#sec-4">#</a></h2>
+
+<table>
+<tr><th></th><th>Абстрактный класс</th><th>Интерфейс</th><th>Трейт</th><th>Enum</th></tr>
+<tr><td>Что это</td><td>незаконченный класс: часть кода есть, часть — «дырки»</td><td>чистый контракт: только сигнатуры</td><td>кусок кода для вклеивания в класс</td><td>тип с фиксированным набором значений</td></tr>
+<tr><td>Реализация внутри</td><td>да</td><td>нет</td><td>да</td><td>да (методы)</td></tr>
+<tr><td>Состояние (свойства)</td><td>да</td><td>нет</td><td>да, но опасно</td><td>нет (только константные case)</td></tr>
+<tr><td>Сколько у класса</td><td>один родитель</td><td>сколько угодно</td><td>сколько угодно</td><td>—</td></tr>
+<tr><td>Отношение</td><td>«является» (Latte <i>является</i> Drink)</td><td>«умеет» (Cash <i>умеет</i> charge)</td><td>«содержит копию кода»</td><td>«одно из»</td></tr>
+<tr><td>Заменяемость через DI</td><td>только наследниками</td><td>любым классом, включая анонимный в тесте</td><td>нет</td><td>—</td></tr>
+<tr><td>Когда выбирать</td><td>общий скелет с состоянием, вариантов немного и все «одной породы»</td><td>нужна замена реализации: конфиг, тест, будущее</td><td>утилитные методы без архитектурного смысла</td><td>размеры, статусы, типы оплаты — всё, что раньше было строкой</td></tr>
+<tr><td>В проекте</td><td><code>Drink</code>, <code>BeverageDecorator</code>, <code>AbstractAmqpWorker</code></td><td><code>Beverage</code>, <code>DiscountPolicy</code>, <code>PaymentMethod</code>, <code>OrderRepository</code>, <code>Notifier</code>, <code>EventPublisher</code>, <code>Clock</code></td><td>не используем намеренно</td><td><code>Size</code>, <code>DrinkType</code>, <code>Extra</code>, <code>OrderStatus</code>, <code>PaymentType</code></td></tr>
+</table>
+<details class="deep"><summary>🔬 Под капотом: почему нельзя «всё интерфейсами» или «всё абстрактными классами»</summary><div class="deep-body">
+
+<p><b>Всё интерфейсами.</b> <code>Latte implements Beverage</code> должен сам считать «база + размер» и собирать название. Четыре напитка — четыре копии. Интерфейс не умеет делиться кодом.</p>
+<p><b>Всё абстрактными классами.</b> <code>CashPayment extends AbstractPayment</code> — и всё, другого родителя не будет. А в тесте нужен поддельный <code>PaymentMethod</code> за три строки — с абстрактным классом тащите его конструктор и состояние. И класс не сможет быть одновременно <code>PaymentMethod</code> и, скажем, <code>Refundable</code>.</p>
+<p><b>Правило.</b> Абстрактный класс — для «скелет + дырки». Интерфейс — для всего, что хочется подменять. В типичном проекте на один абстрактный класс — десять интерфейсов.</p>
+</div></details>
+
+<h3>Абстрактный класс: два вида «дырок»</h3>
+<pre><code>abstract class Drink
+{
+    abstract protected function basePrice(): Money;     // абстрактный метод: ребёнок ОБЯЗАН реализовать
+    protected function note(): string { return ''; }     // хук: есть дефолт, ребёнок МОЖЕТ переопределить
+
+    final public function price(): Money                 // скелет: менять нельзя
+    {
+        return $this-&gt;basePrice()-&gt;add($this-&gt;size-&gt;surcharge());
+    }
+}</code></pre>
+<p>Абстрактный метод — для того, без чего класс бессмыслен (напиток без цены). Хук — для того, что нужно одному наследнику из пяти (у чая есть примечание про заваривание, у остальных нет). Если сделать <code>note()</code> абстрактным, четыре класса напишут пустой метод — шум.</p><div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-5">5</a></span><ul>
+<li>📖 Почитать: <a href="https://www.php.net/manual/ru/language.oop5.abstract.php" target="_blank">Абстрактные классы</a>, <a href="https://www.php.net/manual/ru/language.oop5.interfaces.php" target="_blank">Интерфейсы</a>, <a href="https://www.php.net/manual/ru/language.enumerations.php" target="_blank">Enum</a> — по 5 минут.</li>
+</ul></div>
+
+<h2 id="sec-5"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-5"></label>5. Наследование vs композиция — главный выбор <a class="anchor" href="#sec-5">#</a></h2>
+
+<p>Задача: латте с овсяным молоком и двойным шотом. Два способа.</p>
+<pre>НАСЛЕДОВАНИЕ                                   КОМПОЗИЦИЯ (Decorator)
+
+Drink                                          Beverage (interface)
+ └─ Latte                                        ▲        ▲
+     ├─ LatteWithOat                             │        │
+     ├─ LatteWithShot                          Latte   BeverageDecorator
+     ├─ LatteWithOatAndShot                               ├─ OatMilk(inner)
+     └─ LatteWithOatAndShotAndVanilla                     ├─ ExtraShot(inner)
+ └─ Cappuccino                                            └─ Syrup(inner, flavor)
+     ├─ CappuccinoWithOat
+     └─ ...                                    new ExtraShot(new OatMilk(new Latte(Size::L)))
+
+4 напитка × 2^4 комбинаций добавок = 64 класса    4 + 3 класса, любые комбинации
+выбор зафиксирован при написании класса           выбор — при сборке объекта, в рантайме</pre>
+
+<table>
+<tr><th>Признак</th><th>Наследование</th><th>Композиция</th></tr>
+<tr><td>Отношение</td><td>«является» (is-a)</td><td>«содержит / использует» (has-a)</td></tr>
+<tr><td>Когда решается поведение</td><td>при написании класса</td><td>при создании объекта (конфиг, запрос, тест)</td></tr>
+<tr><td>Комбинирование</td><td>один родитель → нет</td><td>сколько угодно частей</td></tr>
+<tr><td>Связь</td><td>сильная: ребёнок зависит от внутренностей родителя (<code>protected</code>)</td><td>слабая: только через публичный контракт</td></tr>
+<tr><td>Подмена в тесте</td><td>трудно</td><td>тривиально</td></tr>
+<tr><td>Где уместно</td><td>общий скелет, который не меняется: <code>Drink</code>, <code>AbstractAmqpWorker</code></td><td>всё, что хочется менять/сочетать: добавки, скидки, оплаты, уведомления</td></tr>
+</table>
+<p>Формула, которую спрашивают на собеседованиях: <b>«предпочитайте композицию наследованию»</b>. Это не «никогда не наследуйте», а «наследуйте только то, что действительно является общим неизменным скелетом; всё остальное — передавайте в конструктор». В лабе наследование встретится три раза, композиция — раз двадцать.</p>
+
+<h2 id="sec-6"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-6"></label>6. Паттерны, которые встретятся <a class="anchor" href="#sec-6">#</a></h2>
+
+<p>Паттерн — имя для решения, к которому вы бы и так пришли. Знать имя полезно, чтобы обсуждать код с другими.</p>
+<table>
+<tr><th>Паттерн</th><th>Идея</th><th>Принцип</th><th>В проекте</th><th>Сессия</th></tr>
+<tr><td><b>Value Object</b></td><td>маленький неизменяемый объект-значение; равенство по содержимому</td><td>инкапсуляция, абстракция над «сырыми» числами</td><td><code>Money</code>, <code>OrderLine</code>, <code>Bill</code>, <code>Receipt</code></td><td>1–2</td></tr>
+<tr><td><b>Template Method</b></td><td>родитель фиксирует скелет, дети заполняют шаги</td><td>наследование + полиморфизм</td><td><code>Drink::price()/name()</code>, <code>AbstractAmqpWorker::handle()</code></td><td>2, 5</td></tr>
+<tr><td><b>Factory (через enum)</b></td><td>одно место, где строка из запроса превращается в объект</td><td>полиморфизм: <code>match</code> есть, но ровно один</td><td><code>DrinkType::make()</code>, <code>Extra::wrap()</code>, <code>PaymentType</code></td><td>2–4</td></tr>
+<tr><td><b>Decorator</b></td><td>обёртка того же интерфейса, добавляющая поведение</td><td>композиция + интерфейс</td><td><code>OatMilk</code>, <code>ExtraShot</code>, <code>Syrup</code> вокруг <code>Beverage</code></td><td>3</td></tr>
+<tr><td><b>Entity / Aggregate</b></td><td>объект с идентичностью и жизненным циклом, охраняющий инварианты</td><td>инкапсуляция</td><td><code>Order</code> + <code>OrderStatus</code></td><td>3</td></tr>
+<tr><td><b>Repository</b></td><td>интерфейс «сохранить / найти», скрывающий БД</td><td>абстракция, DI</td><td><code>OrderRepository</code>: Eloquent / InMemory</td><td>3, 5</td></tr>
+<tr><td><b>Strategy</b></td><td>заменяемое поведение — объект с интерфейсом</td><td>полиморфизм через интерфейс, композиция</td><td><code>DiscountPolicy</code>, <code>PaymentMethod</code>, <code>Notifier</code></td><td>4–5</td></tr>
+<tr><td><b>Null Object</b></td><td>реализация, которая ничего не делает, вместо <code>null</code></td><td>полиморфизм</td><td><code>NoDiscount</code>, <code>NullNotifier</code>; <code>RecordingEventPublisher</code> в тестах</td><td>4–5</td></tr>
+<tr><td><b>Dependency Injection</b></td><td>зависимости приходят снаружи; контейнер собирает граф</td><td>инверсия зависимостей</td><td>конструкторы контроллеров и воркеров, <code>AppServiceProvider</code></td><td>3–5</td></tr>
+</table>
+
+<h2 id="sec-7"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-7"></label>7. Стек, структура проекта, поток запроса <a class="anchor" href="#sec-7">#</a></h2>
+
+<table>
+<tr><th>Компонент</th><th>Выбор</th><th>Зачем</th></tr>
+<tr><td>Приложение</td><td>Laravel 13, PHP 8.4</td><td>роутинг, контейнер, Eloquent, Artisan — но домен пишем без зависимости от них</td></tr>
+<tr><td>БД</td><td>PostgreSQL 17</td><td>заказы (jsonb для строк заказа)</td></tr>
+<tr><td>Брокер</td><td>RabbitMQ 4 + Management</td><td>события <code>order.paid</code> / <code>order.ready</code>; топология как код (definitions.json)</td></tr>
+<tr><td>Почта</td><td>Mailpit</td><td>уведомление «заказ готов»</td></tr>
+<tr><td>Воркеры</td><td>Artisan-команды в отдельных контейнерах</td><td>как в RabbitMQ Lab: <code>worker:barista</code>, <code>worker:notify</code></td></tr>
+</table>
+<pre>coffee-shop-lab/
+├── docker-compose.yml
+├── rabbitmq/
+│   ├── rabbitmq.conf
+│   └── definitions.json              cafe.events (topic) → barista.queue (order.paid), notify.queue (order.ready)
+└── laravel-app/
+    ├── Dockerfile
+    ├── lab0/                         сессия 1: чистый PHP, без Laravel
+    ├── config/cafe.php               discount, notifier, card_declines, barista_seconds
+    ├── config/rabbitmq.php
+    ├── app/
+    │   ├── Domain/                   ← чистый PHP: ни Laravel, ни БД, ни брокера. Только бизнес.
+    │   │   ├── Money.php
+    │   │   ├── Menu/                 Size, Beverage, Drink, Espresso, Latte, Cappuccino, Tea, DrinkType,
+    │   │   │                         BeverageDecorator, OatMilk, ExtraShot, Syrup, Extra
+    │   │   ├── Order/                Order, OrderLine, OrderStatus, OrderNotFound, OrderRepository (interface), Notifier (interface)
+    │   │   ├── Pricing/              DiscountPolicy + NoDiscount, PercentDiscount, BulkDiscount, HappyHourDiscount, BestOf;
+    │   │   │                         Clock (interface), Checkout, Bill
+    │   │   ├── Payment/              PaymentMethod + CashPayment, CardPayment; CardGateway (interface); PaymentType; Receipt; PaymentFailed
+    │   │   └── Events/               EventPublisher (interface)
+    │   ├── Infrastructure/           ← реализации интерфейсов домена, которые знают про Laravel/БД/брокер
+    │   │   ├── Persistence/          EloquentOrderRepository, InMemoryOrderRepository
+    │   │   ├── Amqp/                 AmqpConnectionFactory, AmqpEventPublisher
+    │   │   ├── Payment/              FakeCardGateway, PaymentMethodFactory
+    │   │   ├── Notification/         LogNotifier, MailNotifier, NullNotifier
+    │   │   └── Clock/                SystemClock, FixedClock
+    │   ├── Http/Controllers/         MenuController, OrderController, PaymentController
+    │   ├── Console/Commands/Workers/ AbstractAmqpWorker, BaristaWorkerCommand, NotifyWorkerCommand
+    │   ├── Models/OrderRecord.php    Eloquent-модель таблицы orders (не путать с Domain\Order\Order)
+    │   └── Providers/AppServiceProvider.php   биндинги интерфейс → реализация по config('cafe.*')
+    └── tests/Unit/Domain/            PHPUnit без Laravel; tests/Feature/ — с подменой репозитория и брокера</pre>
+<div class="insight-box"><span class="tag">ПОЧЕМУ Domain/ ОТДЕЛЬНО ОТ Infrastructure/</span><p>Это самая важная граница проекта. В <code>app/Domain/</code> нет ни одного <code>use Illuminate\...</code>: там только правила кофейни. Всё, что умеет говорить с внешним миром (Postgres, RabbitMQ, SMTP, часы), живёт в <code>Infrastructure/</code> и реализует интерфейсы из <code>Domain/</code>. Стрелка зависимости направлена <b>внутрь</b>: инфраструктура знает про домен, домен про инфраструктуру — нет. Именно поэтому домен тестируется за миллисекунды без Docker, а Postgres можно заменить на что угодно, не трогая бизнес-логику. Это принцип Dependency Inversion (раздел 8, буква D) в масштабе проекта.</p></div>
+
+<h3>Поток одного заказа</h3>
+<pre>POST /api/orders  {"email":"ann@lab.test","items":[{"drink":"latte","size":"L","extras":["oat","shot"],"qty":2}]}
+   │  OrderController
+   ▼  DrinkType::from('latte')-&gt;make(Size::from('L'))        ← Factory
+   ▼  Extra::from('oat')-&gt;wrap(...) → Extra::from('shot')-&gt;wrap(...)   ← Decorator
+   ▼  $order = Order::open(email);  $order-&gt;add($beverage, 2)         ← Entity, инварианты
+   ▼  $repo-&gt;save($order)                                             ← Repository (Eloquent)
+   → 201 {"id": "01J…", "subtotal": "920,00 ₽", "status": "draft"}
+
+POST /api/orders/{id}/pay  {"method":"card"}
+   │  PaymentController
+   ▼  $order = $repo-&gt;find($id)
+   ▼  $bill  = $checkout-&gt;bill($order)          ← Strategy: DiscountPolicy из config('cafe.discount')
+   ▼  $receipt = $methods-&gt;make(PaymentType::Card)-&gt;charge($bill-&gt;total, $order)   ← Strategy: PaymentMethod
+   ▼  $order-&gt;markPaid();  $repo-&gt;save($order)
+   ▼  $events-&gt;publish('order.paid', [...])     ← EventPublisher (AMQP)
+   → 200 {"bill": {...}, "receipt": {...}}
+
+RabbitMQ: cafe.events ──order.paid──▶ barista.queue ──▶ worker:barista
+                                                          $order-&gt;markReady(); save; publish('order.ready')
+          cafe.events ──order.ready─▶ notify.queue ──▶ worker:notify
+                                                          $notifier-&gt;orderReady($order)   ← Strategy: Log | Mail | Null</pre>
+
+<h2 id="sec-8"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-8"></label>8. SOLID на пальцах <a class="anchor" href="#sec-8">#</a></h2>
+
+<table>
+<tr><th>Буква</th><th>Правило</th><th>На кофейне</th><th>Где в заданиях</th></tr>
+<tr><td><b>S</b>ingle responsibility</td><td>одна причина меняться</td><td><code>Order</code> знает про строки и статусы; <code>Checkout</code> — про скидки; <code>PaymentController</code> — про HTTP. Изменение правил скидок не трогает <code>Order</code></td><td>3.3, 4.2</td></tr>
+<tr><td><b>O</b>pen/closed</td><td>расширять без правки существующего</td><td>новый напиток / добавка / скидка / оплата = новый класс; старые не трогаем</td><td>2.3, 3.2, 4.1</td></tr>
+<tr><td><b>L</b>iskov substitution</td><td>реализацию можно подставить вместо абстракции без сюрпризов</td><td><code>OatMilk</code> — тоже <code>Beverage</code>: касса не заметит подмены. Если декоратор вернёт отрицательную цену — нарушение</td><td>3.2</td></tr>
+<tr><td><b>I</b>nterface segregation</td><td>узкие интерфейсы</td><td><code>OrderRepository</code> — <code>save</code> и <code>find</code>; <code>Clock</code> — один метод</td><td>3.4, 4.1</td></tr>
+<tr><td><b>D</b>ependency inversion</td><td>зависеть от абстракций</td><td>контроллер зависит от <code>OrderRepository</code>, а не от Eloquent; какую реализацию дать — решает провайдер</td><td>3.4, 4.3, 5.3</td></tr>
+</table>
+<div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-9">9</a></span><ul>
+<li>📖 Почитать: <a href="https://laravel.com/docs/13.x/container" target="_blank">Laravel: Service Container</a> — разделы Binding Interfaces To Implementations и Contextual Binding.</li>
+<li>✅ Установлен Docker, свободны порты 8000 (API), 5672/15672 (RabbitMQ), 8025 (Mailpit), 5432 (Postgres).</li>
+</ul></div>
+
+<h2 id="sec-9"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-9"></label>9. Задания: пять сессий <a class="anchor" href="#sec-9">#</a></h2>
+
+<p>Каждая сессия заканчивается рабочим состоянием проекта. Порядок строгий. Ответы на «проверь себя» пишите в <span class="file">docs/oop-notes.md</span> — одна-две строки на вопрос; в разделе 12 они соберутся в итоговый тест.</p>
+<table>
+<tr><th>Сессия</th><th>Тема</th><th>Что покажет</th><th>Результат</th></tr>
+<tr><td>1</td><td>Стенд + чистый PHP без Laravel: от массива к объектам</td><td>азбука из раздела 2, первые два принципа</td><td>четыре скрипта в <code>lab0/</code>, Docker-стенд поднят</td></tr>
+<tr><td>2</td><td>Домен напитков в Laravel: Money, Size, Drink и наследники, фабрика, GET /api/menu</td><td>Value Object, Template Method, enum, полиморфизм</td><td>меню отдаётся по HTTP; первые unit-тесты</td></tr>
+<tr><td>3</td><td>Decorator для добавок, Entity Order с инвариантами, Repository, POST /api/orders</td><td>интерфейс vs абстрактный класс, композиция vs наследование, инкапсуляция</td><td>заказ создаётся, считается, сохраняется в Postgres</td></tr>
+<tr><td>4</td><td>Strategy: скидки и оплаты, DI через контейнер и конфиг, эксперимент «то же наследованием»</td><td>полиморфизм через интерфейс, DIP, Null Object</td><td>POST /api/orders/{id}/pay с настраиваемыми скидками и способами оплаты</td></tr>
+<tr><td>5</td><td>RabbitMQ: события, воркеры бариста и уведомлений, Notifier, InMemory-репозиторий, тесты</td><td>DI в воркерах, подмена инфраструктуры в тестах, SRP</td><td>полный цикл заказ → оплата → готов → письмо; ~15 тестов за 0.1 с</td></tr>
+</table>
+<div class="session-banner" id="session-1">Сессия <a href="#session-1" style="color:#fff;text-decoration:none">1</a> — Стенд и чистый PHP — от массива к объекту <span>~2,5 часа</span></div>
+<div class="step" id="step-1-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-1"></label><span class="num">Шаг 1.1</span>Стенд: docker-compose, RabbitMQ-топология, Laravel 13<a class="anchor" href="#step-1-1">#</a></span><div class="step-body">
+<pre><code>mkdir -p coffee-shop-lab/rabbitmq coffee-shop-lab/laravel-app &amp;&amp; cd coffee-shop-lab
+git init</code></pre>
+<pre><code># rabbitmq/rabbitmq.conf
+load_definitions = /etc/rabbitmq/definitions.json</code></pre>
+<pre><code>// rabbitmq/definitions.json — топология понадобится только в сессии 5, но пусть поднимается сразу
+{
+  "vhosts": [{ "name": "/" }],
+  "exchanges": [{ "name": "cafe.events", "vhost": "/", "type": "topic", "durable": true }],
+  "queues": [
+    { "name": "barista.queue", "vhost": "/", "durable": true, "arguments": { "x-queue-type": "classic" } },
+    { "name": "notify.queue",  "vhost": "/", "durable": true, "arguments": { "x-queue-type": "classic" } }
+  ],
+  "bindings": [
+    { "source": "cafe.events", "vhost": "/", "destination": "barista.queue", "destination_type": "queue", "routing_key": "order.paid" },
+    { "source": "cafe.events", "vhost": "/", "destination": "notify.queue",  "destination_type": "queue", "routing_key": "order.ready" }
+  ]
+}</code></pre>
+<pre><code># laravel-app/Dockerfile
+FROM php:8.4-cli
+RUN apt-get update &amp;&amp; apt-get install -y git unzip libpq-dev libzip-dev \
+    &amp;&amp; docker-php-ext-install pdo_pgsql pcntl sockets bcmath zip \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /app</code></pre>
+<pre><code># docker-compose.yml
+services:
+  postgres:
+    image: postgres:17
+    environment: { POSTGRES_DB: cafe, POSTGRES_USER: cafe, POSTGRES_PASSWORD: cafe }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    environment: { RABBITMQ_DEFAULT_USER: cafe, RABBITMQ_DEFAULT_PASS: cafe }   # пользователя создаёт env, как в RabbitMQ Lab
+    ports: ["5672:5672", "15672:15672"]
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+
+  mailpit:
+    image: axllent/mailpit
+    ports: ["8025:8025", "1025:1025"]
+
+  app: &amp;app
+    build: ./laravel-app
+    volumes: [./laravel-app:/app]
+    working_dir: /app
+    env_file: ./laravel-app/.env
+    depends_on: [postgres, rabbitmq, mailpit]
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports: ["8000:8000"]
+
+  barista-worker:
+    &lt;&lt;: *app
+    ports: []
+    command: php artisan worker:barista
+    restart: unless-stopped
+    profiles: [workers]            # поднимем в сессии 5: docker compose --profile workers up -d
+
+  notify-worker:
+    &lt;&lt;: *app
+    ports: []
+    command: php artisan worker:notify
+    restart: unless-stopped
+    profiles: [workers]
+
+volumes:
+  pgdata:</code></pre>
+<pre><code>docker compose build app
+docker compose run --rm --no-deps app composer create-project laravel/laravel . "13.*"
+docker compose run --rm --no-deps app composer require php-amqplib/php-amqplib
+docker compose run --rm --no-deps app php artisan install:api      # routes/api.php</code></pre>
+<pre><code># laravel-app/.env — поверх сгенерированного
+APP_URL=http://localhost:8000
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE=cafe
+DB_USERNAME=cafe
+DB_PASSWORD=cafe
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS=cafe@lab.test
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+RABBITMQ_USER=cafe
+RABBITMQ_PASSWORD=cafe
+CAFE_DISCOUNT=none
+CAFE_NOTIFIER=log
+CAFE_CARD_DECLINES=false
+CAFE_BARISTA_SECONDS=2</code></pre>
+<pre><code>docker compose up -d
+docker compose exec app php artisan migrate
+curl http://localhost:8000/up            # Laravel health-check
+# UI RabbitMQ: http://localhost:15672 (cafe/cafe) — exchange cafe.events и две очереди уже есть</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>/up</code> отвечает 200, миграции прошли, в RabbitMQ UI видны <code>cafe.events</code>, <code>barista.queue</code>, <code>notify.queue</code>. Воркеры пока не запущены (profile <code>workers</code>).</p></div>
+<div class="why"><b>Зачем:</b> Стенд тот же, что в RabbitMQ Lab, — чтобы ничего нового про инфраструктуру не учить. <code>profiles: [workers]</code> — команды воркеров появятся только в сессии 5, а до того контейнеры не должны падать в рестарт-цикле. <code>lab0/</code> внутри laravel-app — просто чтобы запускать скрипты тем же контейнером с PHP 8.4.</div>
+</div></div>
+<div class="step" id="step-1-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-2"></label><span class="num">Шаг 1.2</span>Точка отсчёта: касса на массивах — <span class="file">lab0/01_arrays.php</span><a class="anchor" href="#step-1-2">#</a></span><div class="step-body">
+<p>Начинаем без Laravel. Файл — скрипт, запуск — <code>docker compose exec app php lab0/01_arrays.php</code>. Сначала «как без ООП»:</p><pre><code>&lt;?php
+// laravel-app/lab0/01_arrays.php
+declare(strict_types=1);
+
+function itemPrice(array $item): int
+{
+    $base   = match ($item['drink']) { 'espresso' =&gt; 150, 'latte' =&gt; 250, 'cappuccino' =&gt; 230, 'tea' =&gt; 120 };
+    $size   = match ($item['size'])  { 'S' =&gt; 0, 'M' =&gt; 40, 'L' =&gt; 80 };
+    $extras = 0;
+    foreach ($item['extras'] as $e) { $extras += match ($e) { 'oat' =&gt; 60, 'shot' =&gt; 70, 'vanilla' =&gt; 40 }; }
+    return ($base + $size + $extras) * $item['qty'];
+}
+
+function orderTotal(array $items): int
+{
+    return array_sum(array_map(itemPrice(...), $items));
+}
+
+$order = [
+    ['drink' =&gt; 'latte',    'size' =&gt; 'L', 'extras' =&gt; ['oat', 'shot'], 'qty' =&gt; 2],
+    ['drink' =&gt; 'espresso', 'size' =&gt; 'S', 'extras' =&gt; [],             'qty' =&gt; 1],
+];
+echo 'Итого: ' . orderTotal($order) . " ₽\n";</code></pre>
+<pre><code>docker compose exec app php lab0/01_arrays.php        # Итого: 1070 ₽</code></pre>
+<p>Теперь три эксперимента — по одному за раз, каждый раз запуская:</p><pre><code>// (а) опечатка:            'drink' =&gt; 'late'
+// (б) бессмысленный размер: 'drink' =&gt; 'espresso', 'size' =&gt; 'L'    — «большой эспрессо» посчитается как 230 ₽
+// (в) количество:          'qty' =&gt; -2                               — итог станет отрицательным</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>(а) PHP Fatal error:  Uncaught UnhandledMatchError: Unhandled match case 'late'
+(б) Итого: 1150 ₽      ← молча, никакой ошибки
+(в) Итого: 150 ₽       ← −920 + 150; тоже молча</pre><p>Из трёх ошибок PHP заметил одну, и ту — в момент подсчёта, а не в момент, когда неправильный заказ появился. Запомните эти три случая: сессия 1 закончится тем, что все три станут невозможными.</p></div>
+<div class="why"><b>Зачем:</b> Это «нулевая точка». Массив принимает что угодно, функции доверяют массиву. Никто не отвечает за то, чтобы заказ был корректным. Всё ООП в лабе — про то, чтобы у каждого правила появился хозяин.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Куда бы вы добавили проверку «эспрессо не бывает L» в этом коде? Сколько мест надо будет помнить, когда таких правил станет десять?</li></ul></div>
+</div></div>
+<div class="step" id="step-1-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-3"></label><span class="num">Шаг 1.3</span>Первый объект: Money — <span class="file">lab0/02_money.php</span><a class="anchor" href="#step-1-3">#</a></span><div class="step-body">
+<p>Первый объект — деньги. Не потому что это сложно, а потому что на нём видно всё: свойство, конструктор, метод, <code>$this</code>, <code>readonly</code>, <code>static</code>-фабрика, <code>private</code>-конструктор.</p><pre><code>&lt;?php
+// laravel-app/lab0/Money.php — только класс; демонстрация будет в 02_money.php
+declare(strict_types=1);
+
+final readonly class Money
+{
+    private const int CENTS_PER_RUB = 100;
+
+    // private-конструктор: снаружи создать Money можно ТОЛЬКО через фабрики ниже
+    private function __construct(public int $cents) {}
+
+    public static function rub(int $rubles, int $kopecks = 0): self
+    {
+        return self::fromCents($rubles * self::CENTS_PER_RUB + $kopecks);
+    }
+
+    public static function fromCents(int $cents): self
+    {
+        if ($cents &lt; 0) {
+            throw new InvalidArgumentException("Money cannot be negative: {$cents}");
+        }
+        return new self($cents);
+    }
+
+    public static function zero(): self { return new self(0); }
+
+    // каждая операция возвращает НОВЫЙ объект — старый не меняется
+    public function add(Money $other): self       { return new self($this-&gt;cents + $other-&gt;cents); }
+    public function subtract(Money $other): self  { return self::fromCents($this-&gt;cents - $other-&gt;cents); }
+    public function multiply(int $factor): self   { return self::fromCents($this-&gt;cents * $factor); }
+    public function percent(int $p): self         { return new self(intdiv($this-&gt;cents * $p, 100)); }
+
+    public function isGreaterThan(Money $other): bool { return $this-&gt;cents &gt; $other-&gt;cents; }
+    public function equals(Money $other): bool        { return $this-&gt;cents === $other-&gt;cents; }
+
+    public function format(): string
+    {
+        return number_format($this-&gt;cents / 100, 2, ',', ' ') . ' ₽';
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// laravel-app/lab0/02_money.php
+declare(strict_types=1);
+require __DIR__ . '/Money.php';
+
+$latte = Money::rub(250);
+$oat   = Money::rub(60);
+$price = $latte-&gt;add($oat)-&gt;multiply(2);
+
+echo $latte-&gt;format(), "\n";          // 250,00 ₽  — не изменился после add()
+echo $price-&gt;format(), "\n";          // 620,00 ₽
+echo $price-&gt;percent(10)-&gt;format(), "\n";   // 62,00 ₽
+
+var_dump(Money::rub(5)-&gt;equals(Money::rub(5)));   // true  — равенство по содержимому
+var_dump(Money::rub(5) === Money::rub(5));         // false — разные объекты
+
+// Теперь три попытки сломать (раскомментируйте по одной):
+// $price-&gt;cents = 1;                 // Error: Cannot modify readonly property Money::$cents
+// new Money(100);                     // Error: Call to private Money::__construct()
+// Money::rub(-5);                     // InvalidArgumentException: Money cannot be negative</code></pre>
+<pre><code>docker compose exec app php lab0/02_money.php</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>250,00 ₽
+620,00 ₽
+62,00 ₽
+bool(true)
+bool(false)</pre><p>И три разных ошибки от трёх попыток сломать — все <b>в момент попытки</b>, не позже.</p></div>
+<div class="why"><b>Зачем:</b> <b>Value Object.</b> Деньги — значение, не сущность: два «250 ₽» неотличимы, у них нет идентичности. Поэтому <code>equals()</code> сравнивает содержимое, а <code>readonly</code> запрещает менять — «изменить» значение так же бессмысленно, как изменить число 5. <b>Инкапсуляция:</b> копейки хранятся целым числом (никаких float с 0.1+0.2), и это решение скрыто: снаружи видны только <code>rub()</code>, <code>add()</code>, <code>format()</code>. Захотите добавить валюту — все правки в одном файле. <b>Private-конструктор + static-фабрики:</b> объект нельзя создать в обход проверки на отрицательность.</div>
+<details class="deep"><summary>🔬 Под капотом: readonly защищает свойство, не объект внутри него; и зачем self в возвращаемом типе</summary><div class="deep-body">
+
+<p><code>readonly int $cents</code> — переприсвоить нельзя, всё. Если бы свойство было объектом (<code>readonly Carbon $at</code>), сам объект внутри можно было бы мутировать (<code>$this-&gt;at-&gt;addDay()</code>). Полная неизменяемость — это readonly <i>плюс</i> дисциплина: внутри VO держать только скаляры и другие VO.</p>
+<p><code>: self</code> означает «объект этого класса». Класс <code>final</code>, наследников не будет — <code>self</code> точен. У нефинального класса фабрика обычно возвращает <code>static</code> (класс, у которого реально вызвали), чтобы <code>Child::rub()</code> вернул <code>Child</code>. Разница <code>self</code>/<code>static</code> — частый вопрос на собеседовании.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>percent()</code> использует <code>intdiv</code>, а не деление? Что будет с 333 копейками × 10 %?</li><li><code>add()</code> вызывает <code>new self</code> напрямую, а <code>subtract()</code> — через <code>fromCents()</code>. Почему разное?</li></ul></div>
+</div></div>
+<div class="step" id="step-1-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-4"></label><span class="num">Шаг 1.4</span>Напитки: от копипасты к abstract Drink, enum Size и полиморфизму — <span class="file">lab0/03_drinks.php</span><a class="anchor" href="#step-1-4">#</a></span><div class="step-body">
+<p>Напитки. Сначала «в лоб» — два класса, и вы увидите дублирование; потом вынесем общее в абстрактного родителя.</p><pre><code>&lt;?php
+// laravel-app/lab0/Drinks.php — Size, Drink и наследники; демонстрация в 03_drinks.php
+declare(strict_types=1);
+require_once __DIR__ . '/Money.php';
+
+enum Size: string
+{
+    case Small = 'S';  case Medium = 'M';  case Large = 'L';
+
+    public function surcharge(): Money
+    {
+        return match ($this) { self::Small =&gt; Money::zero(), self::Medium =&gt; Money::rub(40), self::Large =&gt; Money::rub(80) };
+    }
+    public function label(): string
+    {
+        return match ($this) { self::Small =&gt; 'маленький', self::Medium =&gt; 'средний', self::Large =&gt; 'большой' };
+    }
+}
+
+// ── Шаг А: два класса «в лоб» ─────────────────────────────────────────────
+final class LatteV1
+{
+    public function __construct(private readonly Size $size) {}
+    public function name(): string  { return 'Латте (' . $this-&gt;size-&gt;label() . ')'; }
+    public function price(): Money  { return Money::rub(250)-&gt;add($this-&gt;size-&gt;surcharge()); }
+}
+final class EspressoV1
+{
+    public function __construct(private readonly Size $size) {}
+    public function name(): string  { return 'Эспрессо (' . $this-&gt;size-&gt;label() . ')'; }
+    public function price(): Money  { return Money::rub(150)-&gt;add($this-&gt;size-&gt;surcharge()); }
+}
+// Разница между классами — два литерала: название и базовая цена. Всё остальное — копипаста.
+// С четырьмя напитками это 4 копии; с изменением формулы цены — 4 правки.
+
+// ── Шаг Б: общее — в абстрактного родителя ────────────────────────────────
+abstract class Drink
+{
+    public function __construct(protected readonly Size $size) {}
+
+    abstract protected function basePrice(): Money;     // дырка: обязательна
+    abstract protected function title(): string;        // дырка: обязательна
+    protected function note(): string { return ''; }    // хук: по желанию
+
+    final public function price(): Money                // скелет: одинаков для всех, менять нельзя
+    {
+        return $this-&gt;basePrice()-&gt;add($this-&gt;size-&gt;surcharge());
+    }
+
+    final public function name(): string
+    {
+        $name = "{$this-&gt;title()} ({$this-&gt;size-&gt;label()})";
+        return $this-&gt;note() === '' ? $name : "{$name}, {$this-&gt;note()}";
+    }
+}
+
+final class Latte extends Drink
+{
+    protected function basePrice(): Money { return Money::rub(250); }
+    protected function title(): string    { return 'Латте'; }
+}
+
+final class Cappuccino extends Drink
+{
+    protected function basePrice(): Money { return Money::rub(230); }
+    protected function title(): string    { return 'Капучино'; }
+}
+
+final class Tea extends Drink
+{
+    protected function basePrice(): Money { return Money::rub(120); }
+    protected function title(): string    { return 'Чай'; }
+    protected function note(): string     { return 'заваривается 4 минуты'; }   // единственный, кому нужен хук
+}
+
+final class Espresso extends Drink
+{
+    public function __construct(Size $size)
+    {
+        if ($size === Size::Large) {
+            throw new DomainException('Эспрессо не бывает большим');   // инвариант — в конструкторе, обойти нельзя
+        }
+        parent::__construct($size);
+    }
+    protected function basePrice(): Money { return Money::rub(150); }
+    protected function title(): string    { return 'Эспрессо'; }
+}</code></pre>
+<pre><code>&lt;?php
+// laravel-app/lab0/03_drinks.php
+declare(strict_types=1);
+require_once __DIR__ . '/Drinks.php';
+
+// ── Шаг В: полиморфизм ────────────────────────────────────────────────────
+$menu = [new Espresso(Size::Small), new Latte(Size::Large), new Cappuccino(Size::Medium), new Tea(Size::Large)];
+
+foreach ($menu as $drink) {                              // одна строка — четыре разных поведения
+    printf("%-40s %s\n", $drink-&gt;name(), $drink-&gt;price()-&gt;format());
+}
+
+// new Drink(Size::Small);           // Error: Cannot instantiate abstract class Drink
+// new Espresso(Size::Large);        // DomainException: Эспрессо не бывает большим
+// Size::from('XL');                 // ValueError: "XL" is not a valid backing value for enum Size</code></pre>
+<pre><code>docker compose exec app php lab0/03_drinks.php</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>Эспрессо (маленький)                     150,00 ₽
+Латте (большой)                          330,00 ₽
+Капучино (средний)                       270,00 ₽
+Чай (большой), заваривается 4 минуты     200,00 ₽</pre><p>Ошибки (а) и (б) из шага 1.2 теперь невозможны: <code>new Late(...)</code> не скомпилируется, <code>new Espresso(Size::Large)</code> бросит исключение в момент создания.</p></div>
+<div class="why"><b>Зачем:</b> <b>Наследование</b> здесь честное: латте <i>является</i> напитком, формула цены у всех одна. <b>Template Method:</b> <code>price()</code> и <code>name()</code> — <code>final</code>, дырки — <code>abstract</code>, хук <code>note()</code> — с пустым дефолтом. <b>Полиморфизм:</b> цикл <code>foreach</code> зовёт <code>name()</code>, не зная, кто перед ним. <b>Enum:</b> размер перестал быть строкой — невалидного размера не существует как значения. <b>Инкапсуляция в конструкторе:</b> <code>Espresso</code> отказывается существовать в неправильном состоянии; обратите внимание на <code>parent::__construct($size)</code> — ребёнок сначала проверяет, потом отдаёт родителю.</div>
+<details class="deep"><summary>🔬 Под капотом: protected $size — почему не private, и что такое «контракт для наследников»</summary><div class="deep-body">
+
+<p><code>$size</code> в <code>Drink</code> — <code>protected</code>, потому что <code>Espresso</code> в конструкторе… стоп, он его не читает — он проверяет аргумент до вызова родителя. А кто читает? Никто из наследников. Значит, <code>$size</code> мог бы быть <code>private</code>. Сделайте так и убедитесь, что всё работает. Урок: каждое <code>protected</code> — это обещание всем будущим наследникам «это поле здесь будет»; давайте его только когда наследнику реально нужно. По умолчанию — <code>private</code>.</p>
+<p>А вот <code>basePrice()</code> и <code>title()</code> — <code>protected</code> правильно: их зовёт родитель, реализуют дети, снаружи они никому не нужны. Публичный API напитка — только <code>name()</code> и <code>price()</code>.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Добавьте пятый напиток «Раф» (350 ₽, примечание «со сливками»). Сколько строк? Сколько существующих файлов пришлось открыть?</li><li>Что сломается, если убрать <code>final</code> с <code>price()</code> и в <code>Tea</code> переопределить его как <code>return Money::rub(999)</code>? Работать будет — а что именно «сломалось»?</li></ul></div>
+</div></div>
+<div class="step" id="step-1-5"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-5"></label><span class="num">Шаг 1.5</span>Заказ с инвариантами: private-состояние, исключения, снимки — <span class="file">lab0/04_order.php</span><a class="anchor" href="#step-1-5">#</a></span><div class="step-body">
+<p>Последняя ошибка из 1.2 — отрицательное количество. Её закрывает объект заказа, который никому не даёт трогать свои строки напрямую.</p><pre><code>&lt;?php
+// laravel-app/lab0/04_order.php
+declare(strict_types=1);
+require_once __DIR__ . '/Drinks.php';
+
+final readonly class OrderLine
+{
+    public function __construct(public string $name, public Money $unitPrice, public int $qty) {}
+    public function total(): Money { return $this-&gt;unitPrice-&gt;multiply($this-&gt;qty); }
+}
+
+final class Order
+{
+    /** @var list&lt;OrderLine&gt; */
+    private array $lines = [];                 // единственное изменяемое состояние — и оно private
+    private bool $paid = false;
+
+    public function add(Drink $drink, int $qty = 1): void
+    {
+        if ($this-&gt;paid)  { throw new DomainException('Заказ уже оплачен, добавлять нельзя'); }
+        if ($qty &lt; 1)     { throw new InvalidArgumentException("Количество должно быть ≥ 1, получено {$qty}"); }
+        $this-&gt;lines[] = new OrderLine($drink-&gt;name(), $drink-&gt;price(), $qty);
+    }
+
+    public function total(): Money
+    {
+        $sum = Money::zero();
+        foreach ($this-&gt;lines as $line) { $sum = $sum-&gt;add($line-&gt;total()); }
+        return $sum;
+    }
+
+    public function pay(): void
+    {
+        if ($this-&gt;lines === []) { throw new DomainException('Нельзя оплатить пустой заказ'); }
+        $this-&gt;paid = true;
+    }
+
+    /** @return list&lt;OrderLine&gt; — массив копируется, снаружи изменить внутренний нельзя */
+    public function lines(): array { return $this-&gt;lines; }
+}
+
+$order = new Order();
+$order-&gt;add(new Latte(Size::Large), 2);
+$order-&gt;add(new Espresso(Size::Small));
+
+foreach ($order-&gt;lines() as $line) {
+    printf("%d × %-25s %s\n", $line-&gt;qty, $line-&gt;name, $line-&gt;total()-&gt;format());
+}
+echo 'Итого: ', $order-&gt;total()-&gt;format(), "\n";
+$order-&gt;pay();
+
+// попытки сломать — по одной:
+// $order-&gt;add(new Tea(Size::Small), -2);     // InvalidArgumentException: Количество должно быть ≥ 1
+// $order-&gt;add(new Tea(Size::Small));         // DomainException: Заказ уже оплачен
+// $order-&gt;lines[] = 'мусор';                 // Error: Cannot access private property Order::$lines
+// $lines = $order-&gt;lines(); $lines[] = 'мусор'; echo count($order-&gt;lines());   // 2 — копия, оригинал цел</code></pre>
+<pre><code>docker compose exec app php lab0/04_order.php</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>2 × Латте (большой)           660,00 ₽
+1 × Эспрессо (маленький)      150,00 ₽
+Итого: 810,00 ₽</pre><p>Все три ошибки из 1.2 теперь невозможны. Ни одна проверка не живёт «снаружи» — у каждого правила есть класс-хозяин: размер — в <code>Size</code> и <code>Espresso</code>, количество и статус — в <code>Order</code>, неотрицательность — в <code>Money</code>.</p></div>
+<div class="why"><b>Зачем:</b> <b>Инкапсуляция в чистом виде.</b> <code>Order</code> — единственный, кто умеет менять свои строки; все входы проходят через проверки. Заметьте два приёма: (1) <code>lines()</code> возвращает массив — в PHP массивы копируются при возврате, поэтому внешний код не доберётся до внутреннего; (2) <code>OrderLine</code> — readonly-снимок: заказ запомнил название и цену <i>на момент добавления</i>, и если завтра латте подорожает, старый заказ не изменится. Это отличие <b>сущности</b> (<code>Order</code> — живёт, меняет состояние, важна идентичность) от <b>значения</b> (<code>OrderLine</code>, <code>Money</code> — неизменны).</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li><code>$paid</code> — <code>bool</code>. Что произойдёт, когда появятся статусы «готовится», «готов», «выдан»? Какой тип из раздела 2 напрашивается? (В сессии 3 сделаем.)</li><li>Почему <code>Order::add()</code> принимает <code>Drink</code>, а хранит <code>OrderLine</code>, а не сам <code>Drink</code>?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 1 → ПЕРЕД СЕССИЕЙ 2</span><ul>
+<li>✅ <code>git add -A && git commit -m "session 1: stand + lab0"</code></li>
+<li>📝 Ответы «проверь себя» 1.2–1.5 в <span class="file">docs/oop-notes.md</span>.</li>
+<li>📖 Теперь самое время прочитать разделы 3–8, если пропускали: примеры в них — ровно то, что вы только что написали.</li>
+<li>📖 Почитать: <a href="https://laravel.com/docs/13.x/routing" target="_blank">Laravel: Routing</a> и <a href="https://laravel.com/docs/13.x/controllers" target="_blank">Controllers</a> — в сессии 2 появится первый эндпоинт.</li>
+</ul></div>
+<div class="session-banner" id="session-2">Сессия <a href="#session-2" style="color:#fff;text-decoration:none">2</a> — Домен напитков в Laravel: Money, Size, Drink, фабрика, GET /api/menu <span>~2 часа</span></div>
+<div class="step" id="step-2-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-1"></label><span class="num">Шаг 2.1</span>Money в <span class="file">app/Domain/</span> + первый unit-тест<a class="anchor" href="#step-2-1">#</a></span><div class="step-body">
+<p>Переносим <code>Money</code> из <code>lab0</code> в приложение. Меняется только шапка файла: namespace и без <code>require</code> — автозагрузка Composer найдёт класс по пути <code>app/Domain/Money.php</code> ↔ <code>App\Domain\Money</code>.</p><pre><code>&lt;?php
+// app/Domain/Money.php
+declare(strict_types=1);
+
+namespace App\Domain;
+
+use InvalidArgumentException;
+
+final readonly class Money
+{
+    /* тело класса — ровно как в lab0/Money.php */
+}</code></pre>
+<p>И сразу первый тест. Это «чистый» PHPUnit: наследуем <code>PHPUnit\Framework\TestCase</code>, а не <code>Tests\TestCase</code>, — приложение Laravel не поднимается, тест идёт миллисекунды.</p><pre><code>&lt;?php
+// tests/Unit/Domain/MoneyTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Money;
+use PHPUnit\Framework\TestCase;
+
+final class MoneyTest extends TestCase
+{
+    public function test_add_returns_new_object_and_keeps_original(): void
+    {
+        $a = Money::rub(250);
+        $b = $a-&gt;add(Money::rub(80));
+
+        $this-&gt;assertSame(25000, $a-&gt;cents);
+        $this-&gt;assertSame(33000, $b-&gt;cents);
+    }
+
+    public function test_equality_is_by_value(): void
+    {
+        $this-&gt;assertTrue(Money::rub(5)-&gt;equals(Money::rub(5)));
+        $this-&gt;assertNotSame(Money::rub(5), Money::rub(5));
+    }
+
+    public function test_negative_is_rejected(): void
+    {
+        $this-&gt;expectException(\InvalidArgumentException::class);
+        Money::rub(1)-&gt;subtract(Money::rub(2));
+    }
+
+    public function test_percent_rounds_down(): void
+    {
+        $this-&gt;assertSame(33, Money::fromCents(333)-&gt;percent(10)-&gt;cents);
+    }
+}</code></pre>
+<pre><code>docker compose exec app php artisan test tests/Unit/Domain</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>   PASS  Tests\Unit\Domain\MoneyTest
+  ✓ add returns new object and keeps original
+  ✓ equality is by value
+  ✓ negative is rejected
+  ✓ percent rounds down
+
+  Tests:    4 passed
+  Duration: 0.03s</pre></div>
+<div class="why"><b>Зачем:</b> Тест — это исполняемая документация контракта. Четыре теста говорят, что <code>Money</code> обещает: неизменяемость, равенство по значению, отказ от отрицательных, округление вниз. Заметьте: тесту не нужны ни база, ни Laravel — потому что <code>Money</code> ни от чего не зависит. Это будет верно для всего <code>app/Domain/</code>.</div>
+</div></div>
+<div class="step" id="step-2-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-2"></label><span class="num">Шаг 2.2</span>Size, Drink и четыре напитка в <span class="file">app/Domain/Menu/</span><a class="anchor" href="#step-2-2">#</a></span><div class="step-body">
+<p>Напитки — в <code>app/Domain/Menu/</code>, по классу на файл (PSR-4: один класс — один файл с тем же именем).</p><pre><code>&lt;?php
+// app/Domain/Menu/Size.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+enum Size: string
+{
+    case Small = 'S';
+    case Medium = 'M';
+    case Large = 'L';
+
+    public function surcharge(): Money
+    {
+        return match ($this) {
+            self::Small  =&gt; Money::zero(),
+            self::Medium =&gt; Money::rub(40),
+            self::Large  =&gt; Money::rub(80),
+        };
+    }
+
+    public function label(): string
+    {
+        return match ($this) { self::Small =&gt; 'маленький', self::Medium =&gt; 'средний', self::Large =&gt; 'большой' };
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/Drink.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+abstract class Drink
+{
+    public function __construct(private readonly Size $size) {}     // private — наследникам не нужно (вывод из 1.4)
+
+    abstract protected function basePrice(): Money;
+    abstract protected function title(): string;
+    protected function note(): string { return ''; }
+
+    final public function price(): Money
+    {
+        return $this-&gt;basePrice()-&gt;add($this-&gt;size-&gt;surcharge());
+    }
+
+    final public function name(): string
+    {
+        $name = "{$this-&gt;title()} ({$this-&gt;size-&gt;label()})";
+        return $this-&gt;note() === '' ? $name : "{$name}, {$this-&gt;note()}";
+    }
+
+    final public function size(): Size { return $this-&gt;size; }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/Latte.php  (Cappuccino 230 ₽, Tea 120 ₽ с note() — по аналогии)
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+final class Latte extends Drink
+{
+    protected function basePrice(): Money { return Money::rub(250); }
+    protected function title(): string    { return 'Латте'; }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/Espresso.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+use DomainException;
+
+final class Espresso extends Drink
+{
+    public function __construct(Size $size)
+    {
+        if ($size === Size::Large) {
+            throw new DomainException('Эспрессо не бывает большим');
+        }
+        parent::__construct($size);
+    }
+
+    protected function basePrice(): Money { return Money::rub(150); }
+    protected function title(): string    { return 'Эспрессо'; }
+}</code></pre>
+<pre><code>&lt;?php
+// tests/Unit/Domain/DrinkTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Menu\{Espresso, Latte, Size, Tea};
+use PHPUnit\Framework\TestCase;
+
+final class DrinkTest extends TestCase
+{
+    public function test_price_is_base_plus_size(): void
+    {
+        $this-&gt;assertSame(33000, (new Latte(Size::Large))-&gt;price()-&gt;cents);
+    }
+
+    public function test_note_hook_is_optional(): void
+    {
+        $this-&gt;assertSame('Латте (средний)', (new Latte(Size::Medium))-&gt;name());
+        $this-&gt;assertSame('Чай (маленький), заваривается 4 минуты', (new Tea(Size::Small))-&gt;name());
+    }
+
+    public function test_large_espresso_does_not_exist(): void
+    {
+        $this-&gt;expectException(\DomainException::class);
+        new Espresso(Size::Large);
+    }
+}</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>php artisan test tests/Unit/Domain</code> — 7 passed.</p></div>
+<div class="why"><b>Зачем:</b> Единственное изменение относительно lab0 — <code>$size</code> стал <code>private</code>, а для внешнего чтения появился <code>size()</code>. Это ответ на вопрос из 1.4: наследникам поле не нужно, значит, оно не часть контракта для них. Тест <code>test_large_espresso_does_not_exist</code> — документация инварианта.</div>
+</div></div>
+<div class="step" id="step-2-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-3"></label><span class="num">Шаг 2.3</span>Фабрика через enum DrinkType и GET /api/menu<a class="anchor" href="#step-2-3">#</a></span><div class="step-body">
+<p>Запрос приносит строку <code>"latte"</code>. Где-то она должна превратиться в <code>new Latte(...)</code>. Это «где-то» должно быть ровно одно — фабрика. Удобнее всего — enum с методом:</p><pre><code>&lt;?php
+// app/Domain/Menu/DrinkType.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+enum DrinkType: string
+{
+    case Espresso   = 'espresso';
+    case Latte      = 'latte';
+    case Cappuccino = 'cappuccino';
+    case Tea        = 'tea';
+
+    /** Единственное место в проекте, где строка превращается в класс напитка. */
+    public function make(Size $size): Drink
+    {
+        return match ($this) {
+            self::Espresso   =&gt; new Espresso($size),
+            self::Latte      =&gt; new Latte($size),
+            self::Cappuccino =&gt; new Cappuccino($size),
+            self::Tea        =&gt; new Tea($size),
+        };
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Http/Controllers/MenuController.php
+
+namespace App\Http\Controllers;
+
+use App\Domain\Menu\{DrinkType, Size};
+use DomainException;
+use Illuminate\Http\JsonResponse;
+
+final class MenuController extends Controller
+{
+    public function index(): JsonResponse
+    {
+        $menu = [];
+        foreach (DrinkType::cases() as $type) {
+            foreach (Size::cases() as $size) {
+                try {
+                    $drink = $type-&gt;make($size);
+                } catch (DomainException) {
+                    continue;                                   // «большой эспрессо» — просто нет в меню
+                }
+                $menu[] = ['type' =&gt; $type-&gt;value, 'size' =&gt; $size-&gt;value, 'name' =&gt; $drink-&gt;name(), 'price' =&gt; $drink-&gt;price()-&gt;format()];
+            }
+        }
+        return response()-&gt;json($menu);
+    }
+}</code></pre>
+<pre><code>// routes/api.php
+use App\Http\Controllers\MenuController;
+
+Route::get('/menu', [MenuController::class, 'index']);</code></pre>
+<pre><code>// bootstrap/app.php — бизнес-ошибки домена → 422 с текстом; понадобится с сессии 3
+-&gt;withExceptions(function (Exceptions $exceptions) {
+    $exceptions-&gt;render(fn (\DomainException $e)          =&gt; response()-&gt;json(['error' =&gt; $e-&gt;getMessage()], 422));
+    $exceptions-&gt;render(fn (\InvalidArgumentException $e) =&gt; response()-&gt;json(['error' =&gt; $e-&gt;getMessage()], 422));
+    $exceptions-&gt;render(fn (\ValueError $e)               =&gt; response()-&gt;json(['error' =&gt; $e-&gt;getMessage()], 422));   // enum::from() с неизвестной строкой
+})</code></pre>
+<pre><code>curl -s localhost:8000/api/menu | jq</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>[
+  { "type": "espresso", "size": "S", "name": "Эспрессо (маленький)", "price": "150,00 ₽" },
+  { "type": "espresso", "size": "M", "name": "Эспрессо (средний)",   "price": "190,00 ₽" },
+  { "type": "latte",    "size": "S", "name": "Латте (маленький)",    "price": "250,00 ₽" },
+  ...
+]</pre><p>11 позиций (4 × 3 минус большой эспрессо). Контроллер не знает ни одного класса напитка по имени — только <code>DrinkType</code> и <code>Drink</code>.</p></div>
+<div class="why"><b>Зачем:</b> Здесь есть <code>match</code> по типу — и это <b>правильный</b> <code>match</code>: он один на проект и живёт рядом с тем, что перечисляет. «Полиморфизм на if'ах» плох, когда таких <code>match</code> десять и они разбросаны по контроллерам; фабрика собирает их в один. Добавить напиток = новый класс + один <code>case</code>. <code>DrinkType::from($string)</code> бесплатно даёт валидацию входа: неизвестная строка → <code>ValueError</code> → 422.</div>
+<details class="deep"><summary>🔬 Под капотом: почему enum-фабрика, а не отдельный класс DrinkFactory</summary><div class="deep-body">
+
+<p>Отдельный класс <code>DrinkFactory::make(string $type, Size $size)</code> — тоже нормально, и в больших проектах так и делают (фабрика может зависеть от контейнера, конфига, репозитория). Enum-фабрика короче и типобезопаснее: параметр — не строка, а <code>DrinkType</code>, и невалидное значение отсекается ещё до вызова. Минус: enum не может иметь зависимостей (у него нет конструктора). Как только фабрике понадобится, например, прайс-лист из БД, — переезжайте в класс. В сессии 4 <code>PaymentType</code> столкнётся именно с этим.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Что вернёт <code>DrinkType::from('LATTE')</code>? А <code>DrinkType::tryFrom('LATTE')</code>? Где логичнее приводить регистр — в контроллере или в enum?</li><li>Контроллер ловит <code>DomainException</code> из фабрики, чтобы пропустить невалидную комбинацию. Это использование исключений «для управления потоком». Придумайте, как <code>Drink</code> мог бы <i>сообщать</i> допустимые размеры без исключения (подсказка: статический метод <code>availableSizes(): array</code> — хук уровня класса).</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 2 → ПЕРЕД СЕССИЕЙ 3</span><ul>
+<li>✅ <code>git commit -am "session 2: domain menu + /api/menu"</code></li>
+<li>📝 Ответы «проверь себя» 2.1–2.3.</li>
+<li>📖 Почитать: <a href="https://refactoring.guru/ru/design-patterns/decorator" target="_blank">Decorator (refactoring.guru)</a> — главное: обёртка реализует тот же интерфейс, что и то, что она оборачивает.</li>
+</ul></div>
+<div class="session-banner" id="session-3">Сессия <a href="#session-3" style="color:#fff;text-decoration:none">3</a> — Добавки-декораторы, сущность Order, репозиторий, POST /api/orders <span>~3 часа</span></div>
+<div class="step" id="step-3-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-1"></label><span class="num">Шаг 3.1</span>Интерфейс Beverage — контракт шире, чем Drink<a class="anchor" href="#step-3-1">#</a></span><div class="step-body">
+<p>Задача: латте с овсяным молоком и двойным шотом. Наследованием — <code>LatteWithOatAndShot extends Latte</code> — раздел 5 уже показал, во что это превращается. Нужна обёртка. Но обёртка «овсяное молоко» — не <code>Drink</code>: у неё нет базовой цены и размера. Значит, нужен более общий контракт, чем абстрактный класс, — интерфейс:</p><pre><code>&lt;?php
+// app/Domain/Menu/Beverage.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+/** Всё, что можно налить в стакан и продать: напиток, напиток с добавкой, напиток с тремя добавками. */
+interface Beverage
+{
+    public function name(): string;
+    public function price(): Money;
+}</code></pre>
+<pre><code>// app/Domain/Menu/Drink.php — одно слово:
+abstract class Drink implements Beverage</code></pre>
+<div class="why"><b>Зачем:</b> До этого шага «напиток» и «то, что продают» были одним понятием — <code>Drink</code>. Теперь их два: <code>Drink</code> — конкретный базовый напиток с размером (абстрактный класс, скелет + дырки), <code>Beverage</code> — всё, у чего есть название и цена (интерфейс, чистый контракт). Касса будет работать с <code>Beverage</code> и никогда не узнает, что внутри. Это тот самый момент из раздела 4: абстрактный класс — для общего кода, интерфейс — для заменяемости.</div>
+</div></div>
+<div class="step" id="step-3-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-2"></label><span class="num">Шаг 3.2</span>Decorator: BeverageDecorator, OatMilk, ExtraShot, Syrup, enum Extra<a class="anchor" href="#step-3-2">#</a></span><div class="step-body">
+<pre><code>&lt;?php
+// app/Domain/Menu/BeverageDecorator.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+/** Скелет всех добавок: держит обёрнутый напиток. Реализует Beverage «не до конца» — name()/price() допишут дети. */
+abstract class BeverageDecorator implements Beverage
+{
+    public function __construct(protected readonly Beverage $inner) {}
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/OatMilk.php   (ExtraShot: ' + двойной шот', +70 ₽ — по аналогии)
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+final class OatMilk extends BeverageDecorator
+{
+    public function name(): string  { return $this-&gt;inner-&gt;name() . ' + овсяное молоко'; }
+    public function price(): Money  { return $this-&gt;inner-&gt;price()-&gt;add(Money::rub(60)); }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/Syrup.php — декоратор с собственным параметром
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+use App\Domain\Money;
+
+final class Syrup extends BeverageDecorator
+{
+    public function __construct(Beverage $inner, private readonly string $flavor)
+    {
+        parent::__construct($inner);
+    }
+
+    public function name(): string  { return "{$this-&gt;inner-&gt;name()} + сироп ({$this-&gt;flavor})"; }
+    public function price(): Money  { return $this-&gt;inner-&gt;price()-&gt;add(Money::rub(40)); }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Menu/Extra.php — фабрика добавок, как DrinkType для напитков
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+enum Extra: string
+{
+    case Oat     = 'oat';
+    case Shot    = 'shot';
+    case Vanilla = 'vanilla';
+    case Caramel = 'caramel';
+
+    public function wrap(Beverage $beverage): Beverage
+    {
+        return match ($this) {
+            self::Oat     =&gt; new OatMilk($beverage),
+            self::Shot    =&gt; new ExtraShot($beverage),
+            self::Vanilla =&gt; new Syrup($beverage, 'ваниль'),
+            self::Caramel =&gt; new Syrup($beverage, 'карамель'),
+        };
+    }
+}</code></pre>
+<pre><code>docker compose exec app php artisan tinker
+&gt;&gt;&gt; use App\Domain\Menu\{Latte, Size, Extra};
+&gt;&gt;&gt; $b = new Latte(Size::Large);
+&gt;&gt;&gt; $b = Extra::Oat-&gt;wrap($b);  $b = Extra::Shot-&gt;wrap($b);  $b = Extra::Vanilla-&gt;wrap($b);
+&gt;&gt;&gt; [$b-&gt;name(), $b-&gt;price()-&gt;format(), $b::class]</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>[
+  "Латте (большой) + овсяное молоко + двойной шот + сироп (ваниль)",
+  "500,00 ₽",
+  "App\Domain\Menu\Syrup",
+]</pre><p>Снаружи — <code>Syrup</code>, внутри него <code>ExtraShot</code>, внутри <code>OatMilk</code>, внутри <code>Latte</code>. Каждый слой знает только про <code>Beverage</code> под собой. Порядок вызова <code>price()</code>: Syrup → ExtraShot → OatMilk → Latte, и обратно с прибавками.</p></div>
+<pre><code>&lt;?php
+// tests/Unit/Domain/BeverageDecoratorTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Menu\{Beverage, Espresso, Extra, Latte, Size};
+use App\Domain\Money;
+use PHPUnit\Framework\TestCase;
+
+final class BeverageDecoratorTest extends TestCase
+{
+    public function test_extras_stack_in_any_order(): void
+    {
+        $a = Extra::Shot-&gt;wrap(Extra::Oat-&gt;wrap(new Latte(Size::Small)));
+        $b = Extra::Oat-&gt;wrap(Extra::Shot-&gt;wrap(new Latte(Size::Small)));
+
+        $this-&gt;assertTrue($a-&gt;price()-&gt;equals($b-&gt;price()));
+        $this-&gt;assertSame(38000, $a-&gt;price()-&gt;cents);            // 250 + 60 + 70
+    }
+
+    public function test_decorator_works_on_any_beverage_even_anonymous(): void
+    {
+        $free = new class implements Beverage {                  // интерфейс можно реализовать прямо в тесте
+            public function name(): string { return 'Вода'; }
+            public function price(): Money { return Money::zero(); }
+        };
+
+        $this-&gt;assertSame('Вода + овсяное молоко', Extra::Oat-&gt;wrap($free)-&gt;name());
+    }
+}</code></pre>
+<div class="why"><b>Зачем:</b> <b>Decorator</b> = композиция + общий интерфейс. Три класса добавок дают 2⁴ = 16 комбинаций с любым из четырёх напитков — против 64 классов при наследовании. <b>Liskov:</b> <code>OatMilk</code> — полноценный <code>Beverage</code>, касса не отличит его от <code>Latte</code>. Второй тест показывает главную силу интерфейса: его реализует <i>анонимный класс из четырёх строк</i>, не имеющий отношения к <code>Drink</code>, — и декоратор работает. С абстрактным классом так не получилось бы.</div>
+<details class="deep"><summary>🔬 Под капотом: BeverageDecorator — abstract class, реализующий интерфейс не полностью</summary><div class="deep-body">
+
+<p>PHP позволяет абстрактному классу объявить <code>implements Beverage</code> и не реализовать методы — обязанность переходит к первому неабстрактному потомку. Это единственное место, где мы используем абстрактный класс для декораторов: у всех одинаковый конструктор и поле <code>$inner</code> — реально общий скелет. <code>$inner</code> — <code>protected</code> (наследникам нужен) и <code>readonly</code> (подменять обёрнутый напиток после сборки — источник неотлаживаемых багов).</p>
+<p>Правило порядка аргументов: <code>$inner</code> первым, параметры декоратора — после (<code>Syrup(Beverage $inner, string $flavor)</code>). Так цепочка читается «снаружи внутрь».</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Добавьте декоратор <code>Decaf</code> (без кофеина, +0 ₽, только меняет название). Нужно ли ему переопределять <code>price()</code>? Что даст перенос <code>price()</code> с дефолтной реализацией (<code>return $this-&gt;inner-&gt;price()</code>) в <code>BeverageDecorator</code>?</li><li>Клиент просит «двойной шот дважды». Что вернёт <code>Extra::Shot-&gt;wrap(Extra::Shot-&gt;wrap($latte))</code>? Это баг или фича? Где бы вы запретили, если запрещать?</li></ul></div>
+</div></div>
+<div class="step" id="step-3-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-3"></label><span class="num">Шаг 3.3</span>Сущность Order, OrderLine, enum OrderStatus с графом переходов<a class="anchor" href="#step-3-3">#</a></span><div class="step-body">
+<p>Заказ из lab0 — в домен, с тремя улучшениями: идентификатор, e-mail клиента и статус как enum с разрешёнными переходами вместо <code>bool $paid</code>.</p><pre><code>&lt;?php
+// app/Domain/Order/OrderStatus.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+enum OrderStatus: string
+{
+    case Draft = 'draft';
+    case Paid  = 'paid';
+    case Ready = 'ready';
+
+    /** Граф переходов — в одном месте. Всё, чего здесь нет, — запрещено. */
+    public function canTransitionTo(self $to): bool
+    {
+        return in_array($to, match ($this) {
+            self::Draft =&gt; [self::Paid],
+            self::Paid  =&gt; [self::Ready],
+            self::Ready =&gt; [],
+        }, true);
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Order/OrderLine.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+use App\Domain\Money;
+
+final readonly class OrderLine
+{
+    public function __construct(public string $name, public Money $unitPrice, public int $qty) {}
+
+    public function total(): Money { return $this-&gt;unitPrice-&gt;multiply($this-&gt;qty); }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Order/Order.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+use App\Domain\Menu\Beverage;
+use App\Domain\Money;
+use DomainException;
+use InvalidArgumentException;
+
+final class Order
+{
+    /** @var list&lt;OrderLine&gt; */
+    private array $lines = [];
+    private OrderStatus $status = OrderStatus::Draft;
+
+    private function __construct(
+        public readonly string $id,
+        public readonly ?string $email,
+    ) {}
+
+    public static function open(string $id, ?string $email = null): self
+    {
+        return new self($id, $email);
+    }
+
+    /** Восстановление из хранилища — без проверок add(): данные уже были валидны при сохранении. */
+    public static function restore(string $id, ?string $email, array $lines, OrderStatus $status): self
+    {
+        $order = new self($id, $email);
+        $order-&gt;lines  = $lines;
+        $order-&gt;status = $status;
+        return $order;
+    }
+
+    public function add(Beverage $beverage, int $qty = 1): void
+    {
+        if ($this-&gt;status !== OrderStatus::Draft) {
+            throw new DomainException("Заказ в статусе {$this-&gt;status-&gt;value}, добавлять нельзя");
+        }
+        if ($qty &lt; 1) {
+            throw new InvalidArgumentException("Количество должно быть ≥ 1, получено {$qty}");
+        }
+        $this-&gt;lines[] = new OrderLine($beverage-&gt;name(), $beverage-&gt;price(), $qty);
+    }
+
+    public function markPaid(): void
+    {
+        if ($this-&gt;lines === []) { throw new DomainException('Нельзя оплатить пустой заказ'); }
+        $this-&gt;transition(OrderStatus::Paid);
+    }
+
+    public function markReady(): void { $this-&gt;transition(OrderStatus::Ready); }
+
+    public function subtotal(): Money
+    {
+        $sum = Money::zero();
+        foreach ($this-&gt;lines as $line) { $sum = $sum-&gt;add($line-&gt;total()); }
+        return $sum;
+    }
+
+    public function itemCount(): int { return array_sum(array_map(fn (OrderLine $l) =&gt; $l-&gt;qty, $this-&gt;lines)); }
+
+    /** @return list&lt;OrderLine&gt; */
+    public function lines(): array       { return $this-&gt;lines; }
+    public function status(): OrderStatus { return $this-&gt;status; }
+
+    private function transition(OrderStatus $to): void
+    {
+        if (!$this-&gt;status-&gt;canTransitionTo($to)) {
+            throw new DomainException("Переход {$this-&gt;status-&gt;value} → {$to-&gt;value} запрещён");
+        }
+        $this-&gt;status = $to;
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// tests/Unit/Domain/OrderTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Menu\{Latte, Size};
+use App\Domain\Order\Order;
+use PHPUnit\Framework\TestCase;
+
+final class OrderTest extends TestCase
+{
+    public function test_subtotal_sums_lines(): void
+    {
+        $o = Order::open('o-1');
+        $o-&gt;add(new Latte(Size::Large), 2);
+        $o-&gt;add(new Latte(Size::Small));
+        $this-&gt;assertSame(91000, $o-&gt;subtotal()-&gt;cents);      // 330×2 + 250
+        $this-&gt;assertSame(3, $o-&gt;itemCount());
+    }
+
+    public function test_cannot_pay_empty_order(): void
+    {
+        $this-&gt;expectException(\DomainException::class);
+        Order::open('o-2')-&gt;markPaid();
+    }
+
+    public function test_cannot_add_after_payment(): void
+    {
+        $o = Order::open('o-3');
+        $o-&gt;add(new Latte(Size::Small));
+        $o-&gt;markPaid();
+        $this-&gt;expectException(\DomainException::class);
+        $o-&gt;add(new Latte(Size::Small));
+    }
+
+    public function test_status_graph_is_enforced(): void
+    {
+        $o = Order::open('o-4');
+        $o-&gt;add(new Latte(Size::Small));
+        $this-&gt;expectException(\DomainException::class);
+        $o-&gt;markReady();                                        // draft → ready минуя paid
+    }
+
+    public function test_line_is_a_snapshot(): void
+    {
+        $o = Order::open('o-5');
+        $o-&gt;add(new Latte(Size::Small));
+        $this-&gt;assertSame('Латте (маленький)', $o-&gt;lines()[0]-&gt;name);   // строка, не объект Latte
+    }
+}</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>php artisan test tests/Unit/Domain</code> — 14 passed. Пять тестов заказа — это пять инвариантов, у каждого из которых теперь есть хозяин и доказательство.</p></div>
+<div class="why"><b>Зачем:</b> <b>Entity.</b> У заказа есть идентичность (<code>id</code>) и жизненный цикл (статусы) — в отличие от <code>Money</code> и <code>OrderLine</code>, он <i>меняется</i>. Поэтому не <code>readonly</code>, но всё изменяемое — <code>private</code>, а меняют его только методы с бизнес-именами: не <code>setStatus()</code>, а <code>markPaid()</code>. <b>Enum с методом <code>canTransitionTo()</code></b> — граф статусов в одном месте, вместо <code>if ($status === 'paid' &amp;&amp; ...)</code> по контроллерам. <b><code>restore()</code></b> — второй именованный конструктор, обходящий проверки: они уже были пройдены при сохранении, а перепроверять при чтении из БД — значит однажды не суметь загрузить старый заказ после изменения правил.</div>
+<details class="deep"><summary>🔬 Под капотом: private-конструктор + два статических: open() и restore()</summary><div class="deep-body">
+
+<p>Это разделение «создать новое» и «восстановить существующее» — стандартная форма для сущностей. <code>open()</code> — точка входа для бизнеса (пустой заказ в статусе draft). <code>restore()</code> — точка входа для репозитория (сессия 3.4), который знает всё и ничего не проверяет. Оба <code>static</code>, потому что объекта ещё нет. Оба возвращают <code>self</code>, класс <code>final</code>.</p>
+<p><code>restore()</code> присваивает <code>private</code>-свойства снаружи конструктора — это разрешено, потому что код находится <i>внутри класса</i>: <code>private</code> — про класс, а не про объект. Тот же приём делает возможным <code>equals()</code>: <code>$this-&gt;cents === $other-&gt;cents</code> читает private другого объекта того же класса.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li><code>lines()</code> возвращает <code>array</code>. Если бы хранили <code>Collection</code> или <code>ArrayObject</code>, копирование при возврате не сработало бы. Как тогда защитить внутреннее состояние?</li><li>Добавьте статус <code>Cancelled</code>: из каких статусов в него можно перейти? Сколько файлов пришлось менять? Что, если бы граф переходов жил в контроллере?</li></ul></div>
+</div></div>
+<div class="step" id="step-3-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-4"></label><span class="num">Шаг 3.4</span>OrderRepository (interface → Eloquent), BeverageBuilder, POST /api/orders<a class="anchor" href="#step-3-4">#</a></span><div class="step-body">
+<p>Заказ надо сохранять. Домен не должен знать про Postgres — он знает только интерфейс «сохранить / найти». Реализацию на Eloquent кладём в <code>Infrastructure/</code>.</p><pre><code>&lt;?php
+// app/Domain/Order/OrderRepository.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+interface OrderRepository
+{
+    public function save(Order $order): void;
+
+    /** @throws OrderNotFound */
+    public function get(string $id): Order;
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Order/OrderNotFound.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+final class OrderNotFound extends \DomainException
+{
+    public static function withId(string $id): self { return new self("Заказ {$id} не найден"); }
+}</code></pre>
+<pre><code>docker compose exec app php artisan make:model OrderRecord -m</code></pre>
+<pre><code>// database/migrations/..._create_order_records_table.php
+Schema::create('order_records', function (Blueprint $table) {
+    $table-&gt;string('id', 26)-&gt;primary();          // ULID
+    $table-&gt;string('email')-&gt;nullable();
+    $table-&gt;jsonb('lines');                       // снимок строк: [{name, unit_cents, qty}]
+    $table-&gt;string('status', 16);
+    $table-&gt;timestamps();
+});
+
+// app/Models/OrderRecord.php
+class OrderRecord extends Model
+{
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $guarded = [];
+    protected $casts = ['lines' =&gt; 'array'];
+}</code></pre>
+<pre><code>&lt;?php
+// app/Infrastructure/Persistence/EloquentOrderRepository.php
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence;
+
+use App\Domain\Money;
+use App\Domain\Order\{Order, OrderLine, OrderNotFound, OrderRepository, OrderStatus};
+use App\Models\OrderRecord;
+
+final class EloquentOrderRepository implements OrderRepository
+{
+    public function save(Order $order): void
+    {
+        OrderRecord::query()-&gt;updateOrCreate(['id' =&gt; $order-&gt;id], [
+            'email'  =&gt; $order-&gt;email,
+            'status' =&gt; $order-&gt;status()-&gt;value,
+            'lines'  =&gt; array_map(
+                fn (OrderLine $l) =&gt; ['name' =&gt; $l-&gt;name, 'unit_cents' =&gt; $l-&gt;unitPrice-&gt;cents, 'qty' =&gt; $l-&gt;qty],
+                $order-&gt;lines(),
+            ),
+        ]);
+    }
+
+    public function get(string $id): Order
+    {
+        $row = OrderRecord::query()-&gt;find($id) ?? throw OrderNotFound::withId($id);
+
+        return Order::restore(
+            id:     $row-&gt;id,
+            email:  $row-&gt;email,
+            lines:  array_map(fn (array $l) =&gt; new OrderLine($l['name'], Money::fromCents($l['unit_cents']), $l['qty']), $row-&gt;lines),
+            status: OrderStatus::from($row-&gt;status),
+        );
+    }
+}</code></pre>
+<pre><code>// app/Providers/AppServiceProvider.php
+use App\Domain\Order\OrderRepository;
+use App\Infrastructure\Persistence\EloquentOrderRepository;
+
+public function register(): void
+{
+    $this-&gt;app-&gt;bind(OrderRepository::class, EloquentOrderRepository::class);   // интерфейс → реализация
+}</code></pre>
+<pre><code>// bootstrap/app.php — ПЕРЕД строкой с \DomainException (Laravel берёт первый подходящий render по порядку регистрации)
+$exceptions-&gt;render(fn (\App\Domain\Order\OrderNotFound $e) =&gt; response()-&gt;json(['error' =&gt; $e-&gt;getMessage()], 404));</code></pre>
+<p>Сборка напитка из запроса — отдельный маленький класс в домене (контроллер не должен знать про <code>Extra</code> и <code>DrinkType</code>):</p><pre><code>&lt;?php
+// app/Domain/Menu/BeverageBuilder.php
+declare(strict_types=1);
+
+namespace App\Domain\Menu;
+
+final class BeverageBuilder
+{
+    /** @param list&lt;string&gt; $extras */
+    public function build(string $drink, string $size, array $extras = []): Beverage
+    {
+        $beverage = DrinkType::from($drink)-&gt;make(Size::from($size));
+        foreach ($extras as $extra) {
+            $beverage = Extra::from($extra)-&gt;wrap($beverage);
+        }
+        return $beverage;
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Http/Controllers/OrderController.php
+
+namespace App\Http\Controllers;
+
+use App\Domain\Menu\BeverageBuilder;
+use App\Domain\Order\{Order, OrderLine, OrderRepository};
+use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Str;
+
+final class OrderController extends Controller
+{
+    public function __construct(
+        private readonly OrderRepository $orders,      // интерфейс: контроллер не знает про Eloquent
+        private readonly BeverageBuilder $builder,
+    ) {}
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request-&gt;validate([
+            'email'          =&gt; ['nullable', 'email'],
+            'items'          =&gt; ['required', 'array', 'min:1'],
+            'items.*.drink'  =&gt; ['required', 'string'],
+            'items.*.size'   =&gt; ['required', 'string'],
+            'items.*.extras' =&gt; ['array'],
+            'items.*.qty'    =&gt; ['integer'],
+        ]);
+
+        $order = Order::open((string) Str::ulid(), $data['email'] ?? null);
+        foreach ($data['items'] as $item) {
+            $order-&gt;add($this-&gt;builder-&gt;build($item['drink'], $item['size'], $item['extras'] ?? []), $item['qty'] ?? 1);
+        }
+        $this-&gt;orders-&gt;save($order);
+
+        return response()-&gt;json($this-&gt;present($order), 201);
+    }
+
+    public function show(string $id): JsonResponse
+    {
+        return response()-&gt;json($this-&gt;present($this-&gt;orders-&gt;get($id)));
+    }
+
+    private function present(Order $order): array
+    {
+        return [
+            'id'       =&gt; $order-&gt;id,
+            'status'   =&gt; $order-&gt;status()-&gt;value,
+            'lines'    =&gt; array_map(fn (OrderLine $l) =&gt; ['name' =&gt; $l-&gt;name, 'qty' =&gt; $l-&gt;qty, 'total' =&gt; $l-&gt;total()-&gt;format()], $order-&gt;lines()),
+            'subtotal' =&gt; $order-&gt;subtotal()-&gt;format(),
+        ];
+    }
+}</code></pre>
+<pre><code>// routes/api.php
+Route::post('/orders',      [OrderController::class, 'store']);
+Route::get ('/orders/{id}', [OrderController::class, 'show']);</code></pre>
+<pre><code>docker compose exec app php artisan migrate
+curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' -d '{
+  "email": "ann@lab.test",
+  "items": [
+    {"drink": "latte", "size": "L", "extras": ["oat", "shot"], "qty": 2},
+    {"drink": "tea",   "size": "S"}
+  ]}' | jq
+# ошибки домена:
+curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' -d '{"items":[{"drink":"espresso","size":"L"}]}'
+curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' -d '{"items":[{"drink":"latte","size":"S","qty":-1}]}'
+curl -s localhost:8000/api/orders/nope</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>{
+  "id": "01J9…",
+  "status": "draft",
+  "lines": [
+    { "name": "Латте (большой) + овсяное молоко + двойной шот", "qty": 2, "total": "920,00 ₽" },
+    { "name": "Чай (маленький), заваривается 4 минуты", "qty": 1, "total": "120,00 ₽" }
+  ],
+  "subtotal": "1 040,00 ₽"
+}
+{"error":"Эспрессо не бывает большим"}                          ← 422
+{"error":"Количество должно быть ≥ 1, получено -1"}              ← 422
+{"error":"Заказ nope не найден"}                                 ← 404 (OrderNotFound — более конкретный render идёт первым)</pre><p><code>GET /api/orders/{id}</code> возвращает тот же заказ из Postgres — через <code>restore()</code>.</p></div>
+<div class="why"><b>Зачем:</b> <b>Repository</b> — граница между доменом и БД. <code>Order</code> не знает, что его хранят в jsonb; <code>EloquentOrderRepository</code> не знает бизнес-правил — только как разложить объект в строку и собрать обратно. <b>Dependency Inversion:</b> контроллер просит <code>OrderRepository</code> (интерфейс), контейнер даёт <code>EloquentOrderRepository</code> — потому что так написано в провайдере. В сессии 5 там же появится <code>InMemoryOrderRepository</code> для тестов, и контроллер об этом не узнает. <b>Две модели заказа</b> — <code>Domain\Order\Order</code> (бизнес) и <code>Models\OrderRecord</code> (строка таблицы) — это осознанно: Eloquent-модель с публичными атрибутами не умеет защищать инварианты, а домен не должен наследовать <code>Model</code>.</div>
+<details class="deep"><summary>🔬 Под капотом: почему не «просто Eloquent-модель Order с методами»</summary><div class="deep-body">
+
+<p>Можно было бы: <code>class Order extends Model { public function markPaid() {...} }</code>. Для маленьких проектов это нормально и это то, что Laravel предлагает по умолчанию. Цена: (1) атрибуты модели публичны и изменяемы (<code>$order-&gt;status = 'whatever'</code>) — инварианты защищены только дисциплиной; (2) тесты домена требуют БД; (3) домен зависит от фреймворка. Мы разделили, чтобы <i>увидеть</i> границу. На практике выбирайте по размеру проекта — но выбирайте осознанно.</p>
+<p><code>OrderNotFound extends DomainException</code> и <code>static withId()</code> — исключение как класс с именованным конструктором: место, где формируется текст ошибки, одно.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li><code>OrderRecord::updateOrCreate</code> перезаписывает <code>lines</code> целиком при каждом <code>save()</code>. При каком объёме заказа это станет проблемой и что тогда делать?</li><li>Контроллер валидирует через <code>$request-&gt;validate()</code>, а домен — через исключения. Это дублирование? Что проверяет каждый из них и почему обе проверки нужны?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 3 → ПЕРЕД СЕССИЕЙ 4</span><ul>
+<li>✅ <code>git commit -am "session 3: decorators, Order entity, repository, POST /api/orders"</code></li>
+<li>📝 Ответы 3.1–3.4. Сравните ответы про <code>Beverage</code> vs <code>Drink</code> с таблицей раздела 4.</li>
+<li>📖 Почитать: <a href="https://refactoring.guru/ru/design-patterns/strategy/php/example" target="_blank">Strategy на PHP</a>; <a href="https://laravel.com/docs/13.x/container#contextual-binding" target="_blank">Laravel: Contextual Binding</a>.</li>
+</ul></div>
+<div class="session-banner" id="session-4">Сессия <a href="#session-4" style="color:#fff;text-decoration:none">4</a> — Strategy: скидки и оплаты, DI через контейнер и конфиг <span>~3 часа</span></div>
+<div class="step" id="step-4-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-1"></label><span class="num">Шаг 4.1</span>DiscountPolicy: пять стратегий + Clock как интерфейс<a class="anchor" href="#step-4-1">#</a></span><div class="step-body">
+<p>Скидки в кофейне меняются каждую неделю: «10 % всем», «−15 % от трёх напитков», «−20 % в happy hour». Если это <code>if</code>'ы в контроллере — каждая акция = правка контроллера и деплой. Делаем скидку объектом с интерфейсом. Одна тонкость: happy hour зависит от текущего времени, а «текущее время» в тесте нужно подменять — значит, часы тоже интерфейс.</p><pre><code>&lt;?php
+// app/Domain/Pricing/DiscountPolicy.php
+declare(strict_types=1);
+
+namespace App\Domain\Pricing;
+
+use App\Domain\Money;
+use App\Domain\Order\Order;
+
+interface DiscountPolicy
+{
+    /** Сколько скинуть с заказа. 0 — валидный ответ. Никогда не больше subtotal — это гарантирует Checkout. */
+    public function discountFor(Order $order): Money;
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Pricing/Clock.php
+declare(strict_types=1);
+
+namespace App\Domain\Pricing;
+
+interface Clock
+{
+    public function now(): \DateTimeImmutable;
+}
+
+// app/Infrastructure/Clock/SystemClock.php
+final class SystemClock implements Clock
+{
+    public function now(): \DateTimeImmutable { return new \DateTimeImmutable(); }
+}
+
+// app/Infrastructure/Clock/FixedClock.php — для тестов
+final class FixedClock implements Clock
+{
+    public function __construct(private readonly \DateTimeImmutable $at) {}
+    public function now(): \DateTimeImmutable { return $this-&gt;at; }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Pricing/NoDiscount.php — Null Object: «скидки нет» как полноценная стратегия, без null-проверок в кассе
+final class NoDiscount implements DiscountPolicy
+{
+    public function discountFor(Order $order): Money { return Money::zero(); }
+}
+
+// app/Domain/Pricing/PercentDiscount.php
+final class PercentDiscount implements DiscountPolicy
+{
+    public function __construct(private readonly int $percent)
+    {
+        if ($percent &lt; 0 || $percent &gt; 100) { throw new \InvalidArgumentException("Процент вне диапазона: {$percent}"); }
+    }
+    public function discountFor(Order $order): Money { return $order-&gt;subtotal()-&gt;percent($this-&gt;percent); }
+}
+
+// app/Domain/Pricing/BulkDiscount.php — композиция: условие + любая другая стратегия
+final class BulkDiscount implements DiscountPolicy
+{
+    public function __construct(private readonly int $minItems, private readonly DiscountPolicy $inner) {}
+    public function discountFor(Order $order): Money
+    {
+        return $order-&gt;itemCount() &gt;= $this-&gt;minItems ? $this-&gt;inner-&gt;discountFor($order) : Money::zero();
+    }
+}
+
+// app/Domain/Pricing/HappyHourDiscount.php — композиция + зависимость от Clock
+final class HappyHourDiscount implements DiscountPolicy
+{
+    public function __construct(
+        private readonly Clock $clock,
+        private readonly int $fromHour,
+        private readonly int $toHour,
+        private readonly DiscountPolicy $inner,
+    ) {}
+
+    public function discountFor(Order $order): Money
+    {
+        $hour = (int) $this-&gt;clock-&gt;now()-&gt;format('G');
+        return ($hour &gt;= $this-&gt;fromHour &amp;&amp; $hour &lt; $this-&gt;toHour) ? $this-&gt;inner-&gt;discountFor($order) : Money::zero();
+    }
+}
+
+// app/Domain/Pricing/BestOf.php — из нескольких акций клиенту достаётся лучшая
+final class BestOf implements DiscountPolicy
+{
+    /** @param list&lt;DiscountPolicy&gt; $policies */
+    public function __construct(private readonly array $policies) {}
+
+    public function discountFor(Order $order): Money
+    {
+        $best = Money::zero();
+        foreach ($this-&gt;policies as $policy) {
+            $d = $policy-&gt;discountFor($order);
+            if ($d-&gt;isGreaterThan($best)) { $best = $d; }
+        }
+        return $best;
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// tests/Unit/Domain/DiscountPolicyTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Menu\{Latte, Size};
+use App\Domain\Order\Order;
+use App\Domain\Pricing\{BestOf, BulkDiscount, HappyHourDiscount, NoDiscount, PercentDiscount};
+use App\Infrastructure\Clock\FixedClock;
+use PHPUnit\Framework\TestCase;
+
+final class DiscountPolicyTest extends TestCase
+{
+    private function order(int $lattes): Order
+    {
+        $o = Order::open('o');
+        $o-&gt;add(new Latte(Size::Small), $lattes);       // 250 ₽ × n
+        return $o;
+    }
+
+    public function test_bulk_applies_only_from_min_items(): void
+    {
+        $policy = new BulkDiscount(3, new PercentDiscount(10));
+        $this-&gt;assertSame(0,    $policy-&gt;discountFor($this-&gt;order(2))-&gt;cents);
+        $this-&gt;assertSame(7500, $policy-&gt;discountFor($this-&gt;order(3))-&gt;cents);   // 750 ₽ × 10 %
+    }
+
+    public function test_happy_hour_depends_on_clock(): void
+    {
+        $inside  = new HappyHourDiscount(new FixedClock(new \DateTimeImmutable('2026-09-14 16:30')), 15, 17, new PercentDiscount(20));
+        $outside = new HappyHourDiscount(new FixedClock(new \DateTimeImmutable('2026-09-14 17:00')), 15, 17, new PercentDiscount(20));
+
+        $this-&gt;assertSame(5000, $inside-&gt;discountFor($this-&gt;order(1))-&gt;cents);
+        $this-&gt;assertSame(0,    $outside-&gt;discountFor($this-&gt;order(1))-&gt;cents);
+    }
+
+    public function test_best_of_picks_the_largest(): void
+    {
+        $policy = new BestOf([new NoDiscount(), new PercentDiscount(5), new PercentDiscount(15)]);
+        $this-&gt;assertSame(3750, $policy-&gt;discountFor($this-&gt;order(1))-&gt;cents);
+    }
+}</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>php artisan test tests/Unit/Domain</code> — 17 passed. Happy hour протестирован в 16:30 и в 17:00 без ожидания реального времени.</p></div>
+<div class="why"><b>Зачем:</b> <b>Strategy:</b> поведение «как считать скидку» — объект, который передают, а не метод, который переопределяют. <b>Композиция стратегий:</b> <code>BulkDiscount(3, new PercentDiscount(15))</code> — стратегия внутри стратегии; из пяти кубиков собирается любая акция без нового класса. <b>Clock как интерфейс</b> — самый маленький и самый показательный пример DIP: <code>HappyHourDiscount</code> не зовёт <code>new DateTimeImmutable()</code>, а просит часы снаружи; в проде — системные, в тесте — застывшие. Любая зависимость от «внешнего мира» (время, случайность, сеть) прячется за интерфейс именно так.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>PercentDiscount</code> проверяет диапазон в конструкторе, а не в <code>discountFor()</code>? Что даёт «падать при создании» по сравнению с «падать при использовании»?</li><li><code>BestOf</code> принимает <code>array</code>. Как гарантировать, что внутри только <code>DiscountPolicy</code>, если PHP не умеет типизировать элементы массива? (Варианты: variadic <code>DiscountPolicy ...$policies</code>, проверка в конструкторе, PHPStan.)</li></ul></div>
+</div></div>
+<div class="step" id="step-4-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-2"></label><span class="num">Шаг 4.2</span>Checkout + Bill, PaymentMethod (Cash, Card + CardGateway), PaymentType, POST /api/orders/{id}/pay<a class="anchor" href="#step-4-2">#</a></span><div class="step-body">
+<p>Касса собирает счёт (subtotal, скидка, итог), а способ оплаты — вторая стратегия. Оплата картой ходит во внешний шлюз — его тоже прячем за интерфейс, чтобы в тесте не платить по-настоящему.</p><pre><code>&lt;?php
+// app/Domain/Pricing/Bill.php
+final readonly class Bill
+{
+    public function __construct(public Money $subtotal, public Money $discount, public Money $total) {}
+}
+
+// app/Domain/Pricing/Checkout.php
+final class Checkout
+{
+    public function __construct(private readonly DiscountPolicy $discount) {}
+
+    public function bill(Order $order): Bill
+    {
+        $subtotal = $order-&gt;subtotal();
+        $discount = $this-&gt;discount-&gt;discountFor($order);
+        if ($discount-&gt;isGreaterThan($subtotal)) { $discount = $subtotal; }      // инвариант кассы: итог не ниже нуля
+        return new Bill($subtotal, $discount, $subtotal-&gt;subtract($discount));
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Payment/PaymentMethod.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
+use App\Domain\Money;
+use App\Domain\Order\Order;
+
+interface PaymentMethod
+{
+    /** @throws PaymentFailed если деньги не получены — заказ остаётся неоплаченным */
+    public function charge(Money $amount, Order $order): Receipt;
+}
+
+// app/Domain/Payment/Receipt.php
+final readonly class Receipt
+{
+    public function __construct(public string $method, public Money $amount, public string $reference) {}
+}
+
+// app/Domain/Payment/PaymentFailed.php
+final class PaymentFailed extends \DomainException {}
+
+// app/Domain/Payment/CashPayment.php
+final class CashPayment implements PaymentMethod
+{
+    public function charge(Money $amount, Order $order): Receipt
+    {
+        return new Receipt('cash', $amount, "cash-{$order-&gt;id}");
+    }
+}
+
+// app/Domain/Payment/CardGateway.php — внешний мир за интерфейсом
+interface CardGateway
+{
+    /** @return string код авторизации  @throws PaymentFailed */
+    public function authorize(Money $amount, string $description): string;
+}
+
+// app/Domain/Payment/CardPayment.php
+final class CardPayment implements PaymentMethod
+{
+    public function __construct(private readonly CardGateway $gateway) {}
+
+    public function charge(Money $amount, Order $order): Receipt
+    {
+        $reference = $this-&gt;gateway-&gt;authorize($amount, "Заказ {$order-&gt;id}");
+        return new Receipt('card', $amount, $reference);
+    }
+}
+
+// app/Domain/Payment/PaymentType.php
+enum PaymentType: string
+{
+    case Cash = 'cash';
+    case Card = 'card';
+
+    /** @return class-string&lt;PaymentMethod&gt; */
+    public function implementation(): string
+    {
+        return match ($this) { self::Cash =&gt; CashPayment::class, self::Card =&gt; CardPayment::class };
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Infrastructure/Payment/FakeCardGateway.php — «банк», который отклоняет карту по флагу
+final class FakeCardGateway implements CardGateway
+{
+    public function __construct(private readonly bool $declines) {}
+
+    public function authorize(Money $amount, string $description): string
+    {
+        if ($this-&gt;declines) { throw new PaymentFailed('Карта отклонена банком'); }
+        return 'auth-' . bin2hex(random_bytes(4));
+    }
+}
+
+// app/Infrastructure/Payment/PaymentMethodFactory.php — enum не может иметь зависимостей, поэтому фабрика — класс,
+// а объекты создаёт контейнер: CardPayment получит CardGateway автоматически
+use Psr\Container\ContainerInterface;
+
+final class PaymentMethodFactory
+{
+    public function __construct(private readonly ContainerInterface $container) {}
+
+    public function make(PaymentType $type): PaymentMethod
+    {
+        return $this-&gt;container-&gt;get($type-&gt;implementation());
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Http/Controllers/PaymentController.php
+
+namespace App\Http\Controllers;
+
+use App\Domain\Order\OrderRepository;
+use App\Domain\Payment\PaymentType;
+use App\Domain\Pricing\Checkout;
+use App\Infrastructure\Payment\PaymentMethodFactory;
+use Illuminate\Http\{JsonResponse, Request};
+
+final class PaymentController extends Controller
+{
+    public function __construct(
+        private readonly OrderRepository $orders,
+        private readonly Checkout $checkout,                 // внутри — DiscountPolicy из провайдера
+        private readonly PaymentMethodFactory $methods,
+    ) {}
+
+    public function pay(string $id, Request $request): JsonResponse
+    {
+        $type  = PaymentType::from($request-&gt;validate(['method' =&gt; ['required', 'string']])['method']);
+        $order = $this-&gt;orders-&gt;get($id);
+
+        $bill    = $this-&gt;checkout-&gt;bill($order);
+        $receipt = $this-&gt;methods-&gt;make($type)-&gt;charge($bill-&gt;total, $order);   // PaymentFailed → 402, заказ не тронут
+        $order-&gt;markPaid();
+        $this-&gt;orders-&gt;save($order);
+
+        return response()-&gt;json([
+            'bill'    =&gt; ['subtotal' =&gt; $bill-&gt;subtotal-&gt;format(), 'discount' =&gt; $bill-&gt;discount-&gt;format(), 'total' =&gt; $bill-&gt;total-&gt;format()],
+            'receipt' =&gt; ['method' =&gt; $receipt-&gt;method, 'amount' =&gt; $receipt-&gt;amount-&gt;format(), 'reference' =&gt; $receipt-&gt;reference],
+            'status'  =&gt; $order-&gt;status()-&gt;value,
+        ]);
+    }
+}</code></pre>
+<pre><code>// routes/api.php
+Route::post('/orders/{id}/pay', [PaymentController::class, 'pay']);
+
+// bootstrap/app.php — перед DomainException
+$exceptions-&gt;render(fn (\App\Domain\Payment\PaymentFailed $e) =&gt; response()-&gt;json(['error' =&gt; $e-&gt;getMessage()], 402));
+
+// config/cafe.php
+return [
+    'discount'        =&gt; env('CAFE_DISCOUNT', 'none'),        // none | percent | bulk | happy_hour | best
+    'notifier'        =&gt; env('CAFE_NOTIFIER', 'log'),         // log | mail | null      (сессия 5)
+    'card_declines'   =&gt; (bool) env('CAFE_CARD_DECLINES', false),
+    'barista_seconds' =&gt; (int) env('CAFE_BARISTA_SECONDS', 2),
+];</code></pre>
+<pre><code>// app/Providers/AppServiceProvider.php — register()
+use App\Domain\Payment\CardGateway;
+use App\Domain\Pricing\{BestOf, BulkDiscount, Clock, DiscountPolicy, HappyHourDiscount, NoDiscount, PercentDiscount};
+use App\Infrastructure\Clock\SystemClock;
+use App\Infrastructure\Payment\FakeCardGateway;
+use Illuminate\Contracts\Foundation\Application;
+
+$this-&gt;app-&gt;bind(Clock::class, SystemClock::class);
+$this-&gt;app-&gt;bind(CardGateway::class, fn () =&gt; new FakeCardGateway(declines: config('cafe.card_declines')));
+
+$this-&gt;app-&gt;bind(DiscountPolicy::class, fn (Application $app) =&gt; match (config('cafe.discount')) {
+    'percent'    =&gt; new PercentDiscount(10),
+    'bulk'       =&gt; new BulkDiscount(3, new PercentDiscount(15)),
+    'happy_hour' =&gt; new HappyHourDiscount($app-&gt;make(Clock::class), 15, 17, new PercentDiscount(20)),
+    'best'       =&gt; new BestOf([
+        new BulkDiscount(3, new PercentDiscount(15)),
+        new HappyHourDiscount($app-&gt;make(Clock::class), 15, 17, new PercentDiscount(20)),
+    ]),
+    default      =&gt; new NoDiscount(),
+});
+// Checkout, PaymentMethodFactory, CashPayment, CardPayment — биндинги не нужны: контейнер соберёт их по типам конструктора</code></pre>
+<pre><code>ID=$(curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' \
+      -d '{"email":"ann@lab.test","items":[{"drink":"latte","size":"L","extras":["oat"],"qty":3}]}' | jq -r .id)
+curl -s -X POST localhost:8000/api/orders/$ID/pay -H 'Content-Type: application/json' -d '{"method":"card"}' | jq
+
+# смена акции — без правки кода:
+CAFE_DISCOUNT=bulk docker compose up -d --force-recreate app      # (создайте новый заказ и оплатите)
+CAFE_CARD_DECLINES=true docker compose up -d --force-recreate app # → 402, заказ остаётся draft</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>{
+  "bill":    { "subtotal": "1 170,00 ₽", "discount": "0,00 ₽", "total": "1 170,00 ₽" },
+  "receipt": { "method": "card", "amount": "1 170,00 ₽", "reference": "auth-3f9a12c0" },
+  "status":  "paid"
+}
+# CAFE_DISCOUNT=bulk (3 напитка): "discount": "175,50 ₽", "total": "994,50 ₽"
+# CAFE_CARD_DECLINES=true:        {"error":"Карта отклонена банком"}  ← 402; GET /api/orders/{id} → "status": "draft"
+# повторная оплата:               {"error":"Переход paid → paid запрещён"} ← 422</pre></div>
+<div class="why"><b>Зачем:</b> Контроллер оплаты не знает ни одной конкретной скидки и ни одного конкретного способа оплаты — только интерфейсы и enum. Три вещи, на которые стоит посмотреть. (1) <b><code>Checkout</code> резолвится контейнером без биндинга</b>: у него в конструкторе <code>DiscountPolicy</code>, для которого биндинг есть, — контейнер собирает граф рекурсивно (autowiring). (2) <b><code>PaymentMethodFactory</code> просит объект у контейнера по имени класса</b> — поэтому <code>CardPayment</code> получает <code>CardGateway</code>, не зная, что это <code>FakeCardGateway</code>. (3) <b>Порядок в <code>pay()</code></b>: сначала <code>charge()</code>, потом <code>markPaid()</code> — если шлюз бросил <code>PaymentFailed</code>, заказ не изменился. Это инвариант уровня сценария, и он тоже живёт в одном месте.</div>
+<details class="deep"><summary>🔬 Под капотом: bind vs singleton, и contextual binding как второй способ назначить стратегию</summary><div class="deep-body">
+
+<p><code>bind</code> создаёт объект при каждом резолве, <code>singleton</code> — один на процесс. Для <code>DiscountPolicy</code> мы взяли <code>bind</code>, чтобы в тестах (сессия 5) <code>config(['cafe.discount' =&gt; ...])</code> действовал на следующий запрос. У стратегий без состояния разницы в поведении нет — только в количестве объектов.</p>
+<p><b>Contextual binding</b> назначает реализацию не глобально, а «для этого класса»:</p>
+<pre><code>$this-&gt;app-&gt;when(PaymentController::class)-&gt;needs(DiscountPolicy::class)-&gt;give(fn () =&gt; new PercentDiscount(10));
+$this-&gt;app-&gt;when(SomeReportService::class)-&gt;needs(DiscountPolicy::class)-&gt;give(NoDiscount::class);</code></pre>
+<p>Так один интерфейс получает разные реализации в разных местах, а сами классы об этом не знают. Плюс: вся сборка в провайдере. Минус: читая <code>PaymentController</code>, вы не видите, какая скидка применяется, — надо идти в провайдер. Для десятка классов удобнее биндинг по конфигу; для сотни — contextual.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li><code>PaymentMethodFactory</code> зависит от <code>Psr\Container\ContainerInterface</code>, а не от <code>Illuminate\Container\Container</code>. Зачем PSR-интерфейс, если проект всё равно на Laravel?</li><li>Сделайте сами: <code>PaymentType::Bonus</code> и <code>BonusPayment</code>, списывающий баллы через интерфейс <code>BonusWallet { balance(); withdraw(Money) }</code> с реализацией <code>InMemoryBonusWallet</code> (баланс из конфига). Если баллов не хватает — <code>PaymentFailed</code>. Сколько существующих файлов пришлось изменить?</li></ul></div>
+</div></div>
+<div class="step" id="step-4-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-3"></label><span class="num">Шаг 4.3</span>Тесты стратегий: Checkout, CardPayment с анонимным шлюзом<a class="anchor" href="#step-4-3">#</a></span><div class="step-body">
+<pre><code>&lt;?php
+// tests/Unit/Domain/PaymentTest.php
+
+namespace Tests\Unit\Domain;
+
+use App\Domain\Menu\{Latte, Size};
+use App\Domain\Money;
+use App\Domain\Order\Order;
+use App\Domain\Payment\{CardGateway, CardPayment, PaymentFailed};
+use App\Domain\Pricing\{Checkout, PercentDiscount};
+use PHPUnit\Framework\TestCase;
+
+final class PaymentTest extends TestCase
+{
+    public function test_checkout_never_produces_negative_total(): void
+    {
+        $order = Order::open('o');  $order-&gt;add(new Latte(Size::Small));
+        $bill  = (new Checkout(new PercentDiscount(100)))-&gt;bill($order);
+
+        $this-&gt;assertSame(0, $bill-&gt;total-&gt;cents);
+        $this-&gt;assertTrue($bill-&gt;discount-&gt;equals($bill-&gt;subtotal));
+    }
+
+    public function test_card_payment_passes_amount_to_gateway(): void
+    {
+        $gateway = new class implements CardGateway {                         // «шпион» — анонимная реализация интерфейса
+            public ?Money $seen = null;
+            public function authorize(Money $amount, string $description): string { $this-&gt;seen = $amount; return 'ok-1'; }
+        };
+        $order = Order::open('o');  $order-&gt;add(new Latte(Size::Small));
+
+        $receipt = (new CardPayment($gateway))-&gt;charge(Money::rub(250), $order);
+
+        $this-&gt;assertSame('ok-1', $receipt-&gt;reference);
+        $this-&gt;assertTrue($gateway-&gt;seen-&gt;equals(Money::rub(250)));
+    }
+
+    public function test_declined_card_is_a_domain_failure(): void
+    {
+        $gateway = new class implements CardGateway {
+            public function authorize(Money $amount, string $description): string { throw new PaymentFailed('declined'); }
+        };
+        $order = Order::open('o');  $order-&gt;add(new Latte(Size::Small));
+
+        $this-&gt;expectException(PaymentFailed::class);
+        (new CardPayment($gateway))-&gt;charge(Money::rub(250), $order);
+    }
+}</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>20 passed. Ни одного обращения к контейнеру, БД или конфигу: стратегии собираются руками из кубиков, шлюз — анонимный класс.</p></div>
+<div class="why"><b>Зачем:</b> Это ответ на вопрос «зачем интерфейс, если реализация одна». <code>CardGateway</code> в проде один (<code>FakeCardGateway</code>, а потом настоящий банк), но в тестах — столько, сколько сценариев: «принял», «отклонил», «запомнил сумму». Анонимный класс <code>implements CardGateway</code> — три строки. Без интерфейса пришлось бы либо ходить в настоящий шлюз, либо мокать конкретный класс с его конструктором и состоянием.</div>
+</div></div>
+<div class="step" id="step-4-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-4"></label><span class="num">Шаг 4.4</span>Эксперимент: то же самое наследованием — и почему не получается<a class="anchor" href="#step-4-4">#</a></span><div class="step-body">
+<p>Чтобы понять, зачем Strategy, — попробуйте без него. На временной ветке (<code>git checkout -b inheritance-experiment</code>) реализуйте требования 4.1–4.2 <b>только наследованием</b>: скидка — переопределение метода <code>Order::discount()</code> в подклассах, оплата — переопределение <code>Order::pay()</code>. Не читайте дальше, пока не упрётесь.</p><pre><code>// Первая попытка обычно выглядит так:
+class DiscountedOrder  extends Order           { protected function discount(): Money { /* 10 % */ } }
+class BulkOrder        extends Order           { protected function discount(): Money { /* от 3 шт. */ } }
+class HappyHourOrder   extends Order           { protected function discount(): Money { /* по времени — а откуда время? new DateTime()? тест? */ } }
+// «лучшая из bulk и happy hour»? → BulkOrHappyHourOrder extends ???  — родитель один.
+// оплата картой для BulkOrder? → CardPaidBulkOrder extends BulkOrder, CashPaidBulkOrder extends BulkOrder, CardPaidHappyHourOrder…
+// сменить акцию по конфигу? → в контроллере match, создающий нужный подкласс. А заказ, созданный вчера как BulkOrder, сегодня — какой класс при restore()?</code></pre>
+<p>Заполните таблицу — она же ответ на вопрос собеседования «когда композиция лучше наследования»:</p><table>
+<tr><th>Критерий</th><th>Наследование (подклассы Order)</th><th>Strategy (DiscountPolicy / PaymentMethod)</th></tr>
+<tr><td>Добавить новую акцию</td><td>? классов</td><td>1 класс</td></tr>
+<tr><td>Комбинация «лучшая из двух»</td><td>?</td><td><code>new BestOf([...])</code></td></tr>
+<tr><td>Акция × способ оплаты (5 × 3)</td><td>?</td><td>5 + 3 класса</td></tr>
+<tr><td>Сменить акцию через env без деплоя</td><td>?</td><td><code>CAFE_DISCOUNT=bulk</code></td></tr>
+<tr><td>Заказ, сохранённый вчера, при новой акции сегодня</td><td>?</td><td>заказ не знает о скидке; <code>Checkout</code> считает по текущей</td></tr>
+<tr><td>Тест happy hour в 16:30</td><td>?</td><td><code>FixedClock</code></td></tr>
+<tr><td>Ответственность <code>Order</code></td><td>строки + статусы + скидки + оплата</td><td>строки + статусы</td></tr>
+<tr><td>Где наследование всё-таки лучше</td><td colspan="2">? (подсказка: <code>Drink</code> остался абстрактным классом. Почему цену напитка не сделали стратегией?)</td></tr>
+</table>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Требования 4.1–4.2 наследованием без комбинаторного взрыва или дублирования не выражаются. Таблица заполнена, ветка удалена, вы снова на <code>main</code>.</p></div>
+<div class="why"><b>Зачем:</b> Наследование фиксирует выбор <i>при написании класса</i> и даёт одного родителя. Композиция откладывает выбор до <i>сборки объекта</i> и позволяет сколько угодно частей. Скидки и оплаты хочется менять, комбинировать и настраивать — композиция. Формула цены напитка одинакова всегда — наследование. Обе техники нужны; вопрос только, что <i>меняется</i>, а что нет.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Сформулируйте разницу между <code>BulkDiscount(3, new PercentDiscount(15))</code> и гипотетическим <code>class BulkPercentDiscount extends PercentDiscount</code>. Оба работают. Что сломается первым и от какого требования?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 4 → ПЕРЕД СЕССИЕЙ 5</span><ul>
+<li>✅ <code>git commit -am "session 4: discounts, payments, DI"</code></li>
+<li>📝 Таблица из 4.4 и ответы 4.1–4.4 в <span class="file">docs/oop-notes.md</span>.</li>
+<li>📖 Освежить из RabbitMQ Lab: раздел про consumer, ack/nack, prefetch. В сессии 5 базовый воркер — упрощённый <code>AbstractAmqpWorker</code> оттуда.</li>
+</ul></div>
+<div class="session-banner" id="session-5">Сессия <a href="#session-5" style="color:#fff;text-decoration:none">5</a> — RabbitMQ: события, воркеры бариста и уведомлений, подмена инфраструктуры в тестах <span>~3 часа</span></div>
+<div class="step" id="step-5-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-1"></label><span class="num">Шаг 5.1</span>EventPublisher: интерфейс в домене, AMQP-реализация в инфраструктуре, публикация order.paid<a class="anchor" href="#step-5-1">#</a></span><div class="step-body">
+<p>После оплаты заказ должен уйти бариста, после готовности — клиенту. Через брокер. Домен при этом не должен знать про AMQP: он знает интерфейс «опубликовать событие».</p><pre><code>&lt;?php
+// app/Domain/Events/EventPublisher.php
+declare(strict_types=1);
+
+namespace App\Domain\Events;
+
+interface EventPublisher
+{
+    /** @param array&lt;string, mixed&gt; $payload — только скаляры, чтобы уложиться в JSON */
+    public function publish(string $event, array $payload): void;
+}</code></pre>
+<pre><code>&lt;?php
+// config/rabbitmq.php
+return [
+    'host'     =&gt; env('RABBITMQ_HOST', 'rabbitmq'),
+    'port'     =&gt; (int) env('RABBITMQ_PORT', 5672),
+    'user'     =&gt; env('RABBITMQ_USER', 'cafe'),
+    'password' =&gt; env('RABBITMQ_PASSWORD', 'cafe'),
+    'exchange' =&gt; 'cafe.events',
+];
+
+// app/Infrastructure/Amqp/AmqpConnectionFactory.php — как в RabbitMQ Lab
+final class AmqpConnectionFactory
+{
+    public function connect(): AMQPStreamConnection
+    {
+        return new AMQPStreamConnection(config('rabbitmq.host'), config('rabbitmq.port'), config('rabbitmq.user'), config('rabbitmq.password'));
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Infrastructure/Amqp/AmqpEventPublisher.php
+declare(strict_types=1);
+
+namespace App\Infrastructure\Amqp;
+
+use App\Domain\Events\EventPublisher;
+use Illuminate\Support\Str;
+use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
+final class AmqpEventPublisher implements EventPublisher
+{
+    private ?AMQPStreamConnection $connection = null;      // ленивое соединение: открывается при первом publish
+    private ?AMQPChannel $channel = null;
+
+    public function __construct(private readonly AmqpConnectionFactory $factory, private readonly string $exchange) {}
+
+    public function publish(string $event, array $payload): void
+    {
+        $message = new AMQPMessage(json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), [
+            'content_type'  =&gt; 'application/json',
+            'delivery_mode' =&gt; AMQPMessage::DELIVERY_MODE_PERSISTENT,
+            'message_id'    =&gt; (string) Str::ulid(),
+            'timestamp'     =&gt; time(),
+        ]);
+        $this-&gt;channel()-&gt;basic_publish($message, $this-&gt;exchange, $event);   // routing key = имя события
+    }
+
+    private function channel(): AMQPChannel
+    {
+        if ($this-&gt;channel === null) {
+            $this-&gt;connection = $this-&gt;factory-&gt;connect();
+            $this-&gt;channel    = $this-&gt;connection-&gt;channel();
+        }
+        return $this-&gt;channel;
+    }
+
+    public function __destruct()
+    {
+        $this-&gt;channel?-&gt;close();
+        $this-&gt;connection?-&gt;close();
+    }
+}</code></pre>
+<pre><code>// app/Providers/AppServiceProvider.php
+use App\Domain\Events\EventPublisher;
+use App\Infrastructure\Amqp\{AmqpConnectionFactory, AmqpEventPublisher};
+
+$this-&gt;app-&gt;singleton(EventPublisher::class,
+    fn (Application $app) =&gt; new AmqpEventPublisher($app-&gt;make(AmqpConnectionFactory::class), config('rabbitmq.exchange')));</code></pre>
+<pre><code>// app/Http/Controllers/PaymentController.php — добавить зависимость и публикацию
+use App\Domain\Events\EventPublisher;
+
+public function __construct(
+    private readonly OrderRepository $orders,
+    private readonly Checkout $checkout,
+    private readonly PaymentMethodFactory $methods,
+    private readonly EventPublisher $events,
+) {}
+
+// в pay(), после $this-&gt;orders-&gt;save($order):
+$this-&gt;events-&gt;publish('order.paid', ['order_id' =&gt; $order-&gt;id, 'email' =&gt; $order-&gt;email, 'total_cents' =&gt; $bill-&gt;total-&gt;cents]);</code></pre>
+<pre><code>ID=$(curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' \
+      -d '{"email":"ann@lab.test","items":[{"drink":"cappuccino","size":"M","extras":["caramel"]}]}' | jq -r .id)
+curl -s -X POST localhost:8000/api/orders/$ID/pay -H 'Content-Type: application/json' -d '{"method":"cash"}' | jq .status
+# RabbitMQ UI → Queues → barista.queue: Ready = 1. Get messages → payload с order_id.</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>"paid"</code> в ответе, одно сообщение в <code>barista.queue</code> с routing key <code>order.paid</code>; в <code>notify.queue</code> пусто (ждёт <code>order.ready</code>). Воркеров ещё нет — сообщение лежит.</p></div>
+<div class="why"><b>Зачем:</b> <b>Инкапсуляция инфраструктуры:</b> контроллер зовёт <code>publish('order.paid', [...])</code> и не знает про exchange, routing key, persistent, message_id — всё это внутри <code>AmqpEventPublisher</code>. Ленивое соединение — тоже инкапсуляция: снаружи не видно, открыт канал или нет; <code>__destruct</code> закрывает за собой. <b>Интерфейс в Domain, реализация в Infrastructure</b> — та же граница, что и у <code>OrderRepository</code>. <b>singleton</b>: одно соединение на процесс, а не на публикацию.</div>
+<details class="deep"><summary>🔬 Под капотом: это не outbox — и почему здесь это сознательно</summary><div class="deep-body">
+
+<p>В RabbitMQ Lab вы делали outbox, потому что <code>save()</code> и <code>publish()</code> — две системы, и между ними процесс может упасть (dual write). Здесь публикуем напрямую после сохранения — упрощение ради фокуса на ООП. Но заметьте: благодаря интерфейсу <code>EventPublisher</code> переход на outbox — это <b>ещё одна реализация</b> (<code>OutboxEventPublisher</code>, который пишет в таблицу) плюс relay-команда, и контроллер не меняется. Это упражнение для «что дальше».</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>publish()</code> принимает <code>array $payload</code>, а не объект <code>Order</code>? Что было бы, если бы событие содержало объект?</li><li><code>AmqpEventPublisher</code> — <code>singleton</code>, <code>DiscountPolicy</code> — <code>bind</code>. Объясните разницу через «есть ли у объекта дорогое состояние».</li></ul></div>
+</div></div>
+<div class="step" id="step-5-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-2"></label><span class="num">Шаг 5.2</span>AbstractAmqpWorker, worker:barista, worker:notify, Notifier (Log / Mail / Null)<a class="anchor" href="#step-5-2">#</a></span><div class="step-body">
+<p>Базовый воркер — упрощённый <code>AbstractAmqpWorker</code> из RabbitMQ Lab (без идемпотентности и retry — их вы умеете добавлять). Новое здесь одно: <b>зависимости воркера приходят в конструктор</b>, потому что <code>handle()</code> у родителя <code>final</code>.</p><pre><code>&lt;?php
+// app/Console/Commands/Workers/AbstractAmqpWorker.php
+declare(strict_types=1);
+
+namespace App\Console\Commands\Workers;
+
+use App\Infrastructure\Amqp\AmqpConnectionFactory;
+use Illuminate\Console\Command;
+use PhpAmqpLib\Exception\AMQPTimeoutException;
+use PhpAmqpLib\Message\AMQPMessage;
+
+abstract class AbstractAmqpWorker extends Command
+{
+    private bool $stopping = false;
+
+    abstract protected function queue(): string;
+    abstract protected function consumerName(): string;
+    /** Бизнес-логика. Исключение → nack без requeue. */
+    abstract protected function process(array $payload): void;
+
+    final public function handle(AmqpConnectionFactory $factory): int
+    {
+        pcntl_async_signals(true);
+        pcntl_signal(SIGTERM, fn () =&gt; $this-&gt;stopping = true);
+        pcntl_signal(SIGINT,  fn () =&gt; $this-&gt;stopping = true);
+
+        $conn = $factory-&gt;connect();
+        $ch   = $conn-&gt;channel();
+        $ch-&gt;basic_qos(0, 1, false);
+        $ch-&gt;basic_consume(
+            queue: $this-&gt;queue(), consumer_tag: $this-&gt;consumerName() . '-' . getmypid(), no_ack: false,
+            callback: fn (AMQPMessage $m) =&gt; $this-&gt;handleMessage($m),
+        );
+        $this-&gt;info("[{$this-&gt;consumerName()}] listening {$this-&gt;queue()}");
+
+        while ($ch-&gt;is_consuming() &amp;&amp; !$this-&gt;stopping) {
+            try { $ch-&gt;wait(timeout: 1); } catch (AMQPTimeoutException) {}
+        }
+        $ch-&gt;close(); $conn-&gt;close();
+        return self::SUCCESS;
+    }
+
+    private function handleMessage(AMQPMessage $msg): void
+    {
+        $this-&gt;line("← {$msg-&gt;get('message_id')}" . ($msg-&gt;get('redelivered') ? ' (REDELIVERED)' : ''));
+        try {
+            $this-&gt;process(json_decode($msg-&gt;getBody(), true, flags: JSON_THROW_ON_ERROR));
+        } catch (\Throwable $e) {
+            $this-&gt;error("   ✖ {$e-&gt;getMessage()} → nack(requeue=false)");
+            $msg-&gt;nack(requeue: false);
+            return;
+        }
+        $msg-&gt;ack();
+        $this-&gt;info('   ✔ ack');
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Console/Commands/Workers/BaristaWorkerCommand.php
+declare(strict_types=1);
+
+namespace App\Console\Commands\Workers;
+
+use App\Domain\Events\EventPublisher;
+use App\Domain\Order\OrderRepository;
+
+final class BaristaWorkerCommand extends AbstractAmqpWorker
+{
+    protected $signature = 'worker:barista';
+
+    public function __construct(
+        private readonly OrderRepository $orders,     // Artisan-команды создаёт контейнер → constructor injection работает
+        private readonly EventPublisher $events,
+    ) {
+        parent::__construct();                        // Command::__construct читает $signature — не забыть
+    }
+
+    protected function queue(): string        { return 'barista.queue'; }
+    protected function consumerName(): string { return 'barista'; }
+
+    protected function process(array $payload): void
+    {
+        $order = $this-&gt;orders-&gt;get($payload['order_id']);
+        $this-&gt;line("   ☕ готовим {$order-&gt;id}: {$order-&gt;itemCount()} шт.");
+        sleep((int) config('cafe.barista_seconds'));
+        $order-&gt;markReady();                          // инвариант: только из paid
+        $this-&gt;orders-&gt;save($order);
+        $this-&gt;events-&gt;publish('order.ready', ['order_id' =&gt; $order-&gt;id, 'email' =&gt; $order-&gt;email]);
+    }
+}</code></pre>
+<pre><code>&lt;?php
+// app/Domain/Order/Notifier.php
+declare(strict_types=1);
+
+namespace App\Domain\Order;
+
+interface Notifier
+{
+    public function orderReady(Order $order): void;
+}
+
+// app/Infrastructure/Notification/LogNotifier.php
+final class LogNotifier implements Notifier
+{
+    public function orderReady(Order $order): void
+    {
+        Log::info("Заказ {$order-&gt;id} готов", ['email' =&gt; $order-&gt;email]);
+    }
+}
+
+// app/Infrastructure/Notification/MailNotifier.php
+final class MailNotifier implements Notifier
+{
+    public function orderReady(Order $order): void
+    {
+        if ($order-&gt;email === null) { return; }
+        Mail::raw("Ваш заказ {$order-&gt;id} готов — забирайте на стойке ☕",
+            fn ($m) =&gt; $m-&gt;to($order-&gt;email)-&gt;subject('Заказ готов'));
+    }
+}
+
+// app/Infrastructure/Notification/NullNotifier.php — Null Object
+final class NullNotifier implements Notifier
+{
+    public function orderReady(Order $order): void {}
+}</code></pre>
+<pre><code>&lt;?php
+// app/Console/Commands/Workers/NotifyWorkerCommand.php
+final class NotifyWorkerCommand extends AbstractAmqpWorker
+{
+    protected $signature = 'worker:notify';
+
+    public function __construct(private readonly OrderRepository $orders, private readonly Notifier $notifier)
+    {
+        parent::__construct();
+    }
+
+    protected function queue(): string        { return 'notify.queue'; }
+    protected function consumerName(): string { return 'notify'; }
+
+    protected function process(array $payload): void
+    {
+        $this-&gt;notifier-&gt;orderReady($this-&gt;orders-&gt;get($payload['order_id']));
+    }
+}</code></pre>
+<pre><code>// app/Providers/AppServiceProvider.php
+use App\Domain\Order\Notifier;
+use App\Infrastructure\Notification\{LogNotifier, MailNotifier, NullNotifier};
+
+$this-&gt;app-&gt;bind(Notifier::class, fn () =&gt; match (config('cafe.notifier')) {
+    'mail'  =&gt; new MailNotifier(),
+    'null'  =&gt; new NullNotifier(),
+    default =&gt; new LogNotifier(),
+});</code></pre>
+<pre><code>CAFE_NOTIFIER=mail docker compose --profile workers up -d --build
+docker compose logs -f barista-worker notify-worker &amp;
+# сообщение из 5.1 всё ещё лежит в barista.queue — воркер подхватит его сразу
+ID=$(curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' \
+      -d '{"email":"ann@lab.test","items":[{"drink":"latte","size":"L","extras":["oat","shot"],"qty":2}]}' | jq -r .id)
+curl -s -X POST localhost:8000/api/orders/$ID/pay -H 'Content-Type: application/json' -d '{"method":"card"}' &gt; /dev/null
+sleep 3; curl -s localhost:8000/api/orders/$ID | jq .status
+# Mailpit: http://localhost:8025 — письмо «Заказ готов»</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>barista-worker  | ← 01J9…
+barista-worker  |    ☕ готовим 01J9…: 2 шт.
+barista-worker  |    ✔ ack
+notify-worker   | ← 01J9…
+notify-worker   |    ✔ ack
+"ready"</pre><p>В Mailpit — письмо на ann@lab.test. Полный цикл: HTTP → Postgres → RabbitMQ → бариста → RabbitMQ → уведомление, и ни один класс домена не знает ни про HTTP, ни про AMQP.</p></div>
+<div class="why"><b>Зачем:</b> <b>Constructor injection в команду.</b> <code>handle()</code> родителя <code>final</code> с фиксированной сигнатурой — значит, наследник не может «попросить» зависимости через параметры <code>handle()</code>. Он просит их в конструкторе, а Laravel создаёт команды через контейнер. Заметьте <code>parent::__construct()</code>: <code>Command</code> в конструкторе читает <code>$signature</code>; забудете — команда не зарегистрируется. <b>Тот же интерфейс — три поведения</b>: <code>Notifier</code> в проде шлёт письмо, в деве пишет в лог, в тесте молчит; воркер одинаков. <b>Template Method снова</b>: цикл consume — общий, <code>process()</code> — дырка. Сравните с сессией 2: <code>Drink::price()</code> устроен так же.</div>
+<details class="deep"><summary>🔬 Под капотом: что произойдёт при повторной доставке, и почему это упражнение, а не ошибка лабы</summary><div class="deep-body">
+
+<p>Убейте <code>barista-worker</code> между <code>save()</code> и <code>ack</code> (<code>docker compose kill barista-worker</code> в трёхсекундное окно <code>sleep</code>). После рестарта сообщение придёт с <code>REDELIVERED</code>, заказ уже <code>ready</code>, <code>markReady()</code> бросит <code>DomainException</code> «переход ready → ready запрещён», воркер сделает nack без requeue — сообщение пропадёт, <code>order.ready</code> не будет опубликован второй раз… но и первый мог не успеть. Вы знаете два решения из RabbitMQ Lab: идемпотентность по message_id и retry-цепочка. Оба добавляются как стратегии/декораторы к этому базовому классу — если хотите, это финальное упражнение по мотивам «OOP Lab — Worker Kit».</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему интерфейс <code>Notifier</code> лежит в <code>Domain/Order/</code>, а его реализации — в <code>Infrastructure/</code>? Кто от кого зависит?</li><li><code>MailNotifier</code> молча ничего не делает, если e-mail не указан. Это Null Object внутри реализации или нарушение контракта? Как бы вы сформулировали контракт <code>orderReady()</code> в docblock, чтобы это было однозначно?</li></ul></div>
+</div></div>
+<div class="step" id="step-5-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-3"></label><span class="num">Шаг 5.3</span>InMemoryOrderRepository, RecordingEventPublisher, сквозной тест без БД и брокера<a class="anchor" href="#step-5-3">#</a></span><div class="step-body">
+<p>Финальная проверка архитектуры: сквозной тест «создать заказ → оплатить картой → событие опубликовано» <b>без Postgres и без RabbitMQ</b>. Для этого — две подменные реализации.</p><pre><code>&lt;?php
+// app/Infrastructure/Persistence/InMemoryOrderRepository.php
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence;
+
+use App\Domain\Order\{Order, OrderNotFound, OrderRepository};
+
+final class InMemoryOrderRepository implements OrderRepository
+{
+    /** @var array&lt;string, Order&gt; */
+    private array $orders = [];
+
+    public function save(Order $order): void { $this-&gt;orders[$order-&gt;id] = $order; }
+
+    public function get(string $id): Order   { return $this-&gt;orders[$id] ?? throw OrderNotFound::withId($id); }
+}</code></pre>
+<pre><code>&lt;?php
+// tests/Support/RecordingEventPublisher.php — тестовый двойник: запоминает, что опубликовали
+
+namespace Tests\Support;
+
+use App\Domain\Events\EventPublisher;
+
+final class RecordingEventPublisher implements EventPublisher
+{
+    /** @var list&lt;array{0: string, 1: array}&gt; */
+    public array $events = [];
+
+    public function publish(string $event, array $payload): void { $this-&gt;events[] = [$event, $payload]; }
+}</code></pre>
+<pre><code>&lt;?php
+// tests/Feature/OrderFlowTest.php — здесь нужен Laravel (HTTP, контейнер), поэтому Tests\TestCase
+
+namespace Tests\Feature;
+
+use App\Domain\Events\EventPublisher;
+use App\Domain\Order\OrderRepository;
+use App\Infrastructure\Persistence\InMemoryOrderRepository;
+use Tests\Support\RecordingEventPublisher;
+use Tests\TestCase;
+
+final class OrderFlowTest extends TestCase
+{
+    private RecordingEventPublisher $events;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this-&gt;app-&gt;instance(OrderRepository::class, new InMemoryOrderRepository());   // вместо Postgres
+        $this-&gt;app-&gt;instance(EventPublisher::class, $this-&gt;events = new RecordingEventPublisher());   // вместо RabbitMQ
+        config(['cafe.discount' =&gt; 'percent', 'cafe.card_declines' =&gt; false]);
+    }
+
+    public function test_full_flow_create_and_pay(): void
+    {
+        $id = $this-&gt;postJson('/api/orders', ['items' =&gt; [['drink' =&gt; 'latte', 'size' =&gt; 'L', 'extras' =&gt; ['oat'], 'qty' =&gt; 2]]])
+            -&gt;assertCreated()
+            -&gt;json('id');
+
+        $this-&gt;postJson("/api/orders/{$id}/pay", ['method' =&gt; 'card'])
+            -&gt;assertOk()
+            -&gt;assertJsonPath('bill.subtotal', '780,00 ₽')     // (250 + 80 + 60) × 2
+            -&gt;assertJsonPath('bill.total',    '702,00 ₽')     // −10 %
+            -&gt;assertJsonPath('status', 'paid');
+
+        $this-&gt;assertCount(1, $this-&gt;events-&gt;events);
+        $this-&gt;assertSame('order.paid', $this-&gt;events-&gt;events[0][0]);
+        $this-&gt;assertSame($id, $this-&gt;events-&gt;events[0][1]['order_id']);
+    }
+
+    public function test_declined_card_keeps_order_draft_and_publishes_nothing(): void
+    {
+        config(['cafe.card_declines' =&gt; true]);
+        $id = $this-&gt;postJson('/api/orders', ['items' =&gt; [['drink' =&gt; 'tea', 'size' =&gt; 'S']]])-&gt;json('id');
+
+        $this-&gt;postJson("/api/orders/{$id}/pay", ['method' =&gt; 'card'])-&gt;assertStatus(402);
+
+        $this-&gt;getJson("/api/orders/{$id}")-&gt;assertJsonPath('status', 'draft');
+        $this-&gt;assertSame([], $this-&gt;events-&gt;events);
+    }
+
+    public function test_domain_errors_become_422(): void
+    {
+        $this-&gt;postJson('/api/orders', ['items' =&gt; [['drink' =&gt; 'espresso', 'size' =&gt; 'L']]])
+            -&gt;assertStatus(422)-&gt;assertJsonPath('error', 'Эспрессо не бывает большим');
+    }
+}</code></pre>
+<pre><code>docker compose exec app php artisan test</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>   PASS  Tests\Unit\Domain\BeverageDecoratorTest   (2)
+   PASS  Tests\Unit\Domain\DiscountPolicyTest       (3)
+   PASS  Tests\Unit\Domain\DrinkTest                (3)
+   PASS  Tests\Unit\Domain\MoneyTest                (4)
+   PASS  Tests\Unit\Domain\OrderTest                (5)
+   PASS  Tests\Unit\Domain\PaymentTest              (3)
+   PASS  Tests\Feature\OrderFlowTest                (3)
+
+  Tests:    23 passed
+  Duration: 0.4s</pre><p>Остановите Postgres и RabbitMQ (<code>docker compose stop postgres rabbitmq</code>) и запустите ещё раз — результат тот же.</p></div>
+<div class="why"><b>Зачем:</b> Это финальный аргумент за границу Domain / Infrastructure. Feature-тест проходит весь HTTP-путь через настоящие контроллеры, настоящий контейнер, настоящие стратегии — и только два «внешних» объекта подменены через <code>$this-&gt;app-&gt;instance()</code>. Ни одной строки контроллера для этого менять не пришлось, потому что контроллер с самого начала зависел от интерфейсов. <code>RecordingEventPublisher</code> — тестовый двойник (spy): реализация интерфейса, чья единственная работа — запомнить вызовы. <code>InMemoryOrderRepository</code> — 10 строк, и это полноценная замена Postgres для сценариев.</div>
+<details class="deep"><summary>🔬 Под капотом: instance() vs bind(), и почему InMemory-репозиторий «сохраняет» без копирования</summary><div class="deep-body">
+
+<p><code>$this-&gt;app-&gt;instance(X::class, $obj)</code> — «на этот интерфейс всегда отдавай вот этот объект»; перекрывает биндинг из провайдера на время теста. Именно поэтому тест держит ссылку на <code>$this-&gt;events</code> — это тот же объект, который получит контроллер.</p>
+<p><code>InMemoryOrderRepository::save()</code> кладёт в массив <i>ссылку</i> на объект; <code>get()</code> вернёт тот же объект. Значит, изменения заказа «сохраняются» даже без вызова <code>save()</code> — в отличие от Eloquent-реализации. Это тонкое расхождение семантик двух реализаций одного интерфейса (как memory-драйвер идемпотентности в Worker Kit): интерфейс гарантирует наличие метода, но не одинаковость всех побочных эффектов. Хотите строже — клонируйте при <code>save()</code> и <code>get()</code>.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Что подменил бы feature-тест для сценария «бариста отметил готовность»? Напишите его: создать оплаченный заказ в InMemory-репозитории, вызвать <code>BaristaWorkerCommand::process()</code>… — стоп, он <code>protected</code>. Как протестировать воркер, не делая метод публичным? (Подсказка: вынести <code>process()</code> в отдельный класс-обработчик <code>PrepareOrderHandler</code>, который воркер только вызывает. Это SRP: воркер — про AMQP, обработчик — про бизнес.)</li></ul></div>
+</div></div>
+<div class="step" id="step-5-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-4"></label><span class="num">Шаг 5.4</span>Финал: карта классов и таблица «до / после»<a class="anchor" href="#step-5-4">#</a></span><div class="step-body">
+<p>Что получилось. Проверьте по своему репозиторию:</p><pre>app/Domain/                             ← 27 классов, 0 зависимостей от Laravel
+  Money                                 VO, private-конструктор, static-фабрики
+  Menu/    Size DrinkType Extra         enum с методами (фабрики)
+           Beverage                     interface
+           Drink → Espresso Latte Cappuccino Tea      abstract + Template Method + инвариант в конструкторе
+           BeverageDecorator → OatMilk ExtraShot Syrup  Decorator
+           BeverageBuilder              сборка из строк запроса
+  Order/   Order OrderLine OrderStatus  Entity + VO + enum-граф; OrderNotFound; OrderRepository, Notifier — interfaces
+  Pricing/ DiscountPolicy → NoDiscount PercentDiscount BulkDiscount HappyHourDiscount BestOf   Strategy + композиция
+           Clock (interface), Checkout, Bill
+  Payment/ PaymentMethod → CashPayment CardPayment; CardGateway (interface); PaymentType; Receipt; PaymentFailed
+  Events/  EventPublisher (interface)
+
+app/Infrastructure/                     ← реализации интерфейсов, знают про Postgres / AMQP / Mail / время
+  Persistence/  EloquentOrderRepository InMemoryOrderRepository
+  Amqp/         AmqpConnectionFactory AmqpEventPublisher
+  Payment/      FakeCardGateway PaymentMethodFactory
+  Notification/ LogNotifier MailNotifier NullNotifier
+  Clock/        SystemClock FixedClock
+
+app/Http/Controllers/  Menu Order Payment        только HTTP: валидация, вызов домена, JSON
+app/Console/Commands/Workers/  AbstractAmqpWorker → Barista Notify
+app/Providers/AppServiceProvider          7 биндингов — единственное место, где интерфейсы встречаются с реализациями
+tests/  6 unit-классов (без Laravel) + 1 feature (без БД и брокера)</pre>
+<table>
+<tr><th></th><th>Касса на массивах (1.2)</th><th>Сейчас</th></tr>
+<tr><td>Где живут правила</td><td>в функциях, которые надо не забыть вызвать</td><td>в классах-хозяевах: размер — <code>Size</code>/<code>Espresso</code>, количество и статусы — <code>Order</code>, деньги — <code>Money</code></td></tr>
+<tr><td>Невалидное состояние</td><td>возможно, обнаруживается поздно или никогда</td><td>невозможно создать: конструкторы, enum, private-поля</td></tr>
+<tr><td>Новый напиток / добавка / акция / оплата</td><td>править <code>match</code> во всех функциях</td><td>новый класс + один <code>case</code>; старый код не тронут</td></tr>
+<tr><td>Комбинации добавок</td><td>—</td><td>любые, декораторами</td></tr>
+<tr><td>Сменить акцию</td><td>деплой</td><td><code>CAFE_DISCOUNT=…</code></td></tr>
+<tr><td>Тесты</td><td>только с БД/шлюзом/брокером</td><td>23 теста за 0,4 с без внешних систем</td></tr>
+<tr><td>Классов</td><td>0</td><td>~45</td></tr>
+<tr><td>Что стало хуже</td><td colspan="2">файлов много; чтобы понять «какая скидка сейчас», надо идти в провайдер; две модели заказа (домен + Eloquent) и маппинг между ними; для маленького проекта это перебор — и это честная цена</td></tr>
+</table>
+<div class="why"><b>Зачем:</b> ООП не делает код «лучше» безусловно. Оно <i>перекладывает</i> сложность: из длинных функций с if'ами — в структуру из маленьких классов и правила их сборки. Выигрыш есть, когда правила действительно меняются, кубики переиспользуются и тестируются отдельно. Если бы у кофейни было два напитка и одна цена навсегда — <code>lab0/01_arrays.php</code> был бы правильным ответом. Умение сказать «здесь ООП не нужно» — тоже часть понимания ООП.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Найдите в <code>app/Domain/</code> все <code>use</code> — есть ли среди них <code>Illuminate\...</code>? Если да, это утечка границы; как её закрыть?</li><li>Перечислите три класса, которые вы бы <b>удалили</b>, если бы проект надо было упростить, и объясните, что при этом потеряется.</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 5</span><ul>
+<li>✅ <code>git commit -am "session 5: rabbitmq workers, notifier, tests"</code></li>
+<li>📝 Ответы 5.1–5.4. Теперь — раздел 12 целиком, письменно.</li>
+</ul></div>
+
+<h2 id="sec-10"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-10"></label>10. Чек-лист: принцип ↔ где он в коде <a class="anchor" href="#sec-10">#</a></h2>
+
+<p>Для каждой строки найдите файл и строку в своём репозитории. Не нашли — принцип прочитан, но не пройден.</p>
+<table>
+<tr><th>Принцип / приём</th><th>Где в коде</th><th>Одна фраза</th></tr>
+<tr><td>Класс vs объект</td><td><code>Latte</code> один, <code>new Latte(...)</code> — сколько заказали</td><td>описание vs экземпляр</td></tr>
+<tr><td>Конструктор как гарантия</td><td><code>Espresso::__construct</code>, <code>PercentDiscount::__construct</code>, <code>Money::fromCents</code></td><td>неправильный объект нельзя создать</td></tr>
+<tr><td>Инкапсуляция</td><td><code>Order::$lines/$status</code> private; <code>Money</code> private-конструктор; <code>AmqpEventPublisher</code> ленивое соединение</td><td>состояние меняют только методы класса</td></tr>
+<tr><td>Абстракция</td><td><code>Beverage</code>, <code>DiscountPolicy</code>, <code>PaymentMethod</code>, <code>OrderRepository</code>, <code>EventPublisher</code>, <code>Notifier</code>, <code>Clock</code>, <code>CardGateway</code></td><td>контракт без реализации</td></tr>
+<tr><td>Наследование</td><td><code>Drink</code> → 4 напитка; <code>BeverageDecorator</code> → 3 добавки; <code>AbstractAmqpWorker</code> → 2 воркера</td><td>общий скелет, дырки в детях</td></tr>
+<tr><td>Полиморфизм через класс</td><td><code>Drink::price()</code> зовёт <code>basePrice()</code>; <code>handle()</code> зовёт <code>process()</code></td><td>родитель зовёт, ребёнок решает</td></tr>
+<tr><td>Полиморфизм через интерфейс</td><td><code>Checkout</code> → <code>$this-&gt;discount</code>; <code>PaymentController</code> → <code>$method-&gt;charge()</code>; <code>NotifyWorker</code> → <code>$notifier</code></td><td>вызывающий не знает реализацию</td></tr>
+<tr><td>Template Method</td><td><code>Drink::price()/name()</code> (final) + <code>basePrice()/title()</code> (abstract) + <code>note()</code> (хук); <code>AbstractAmqpWorker::handle()</code></td><td>скелет + дырки + хуки</td></tr>
+<tr><td>Value Object</td><td><code>Money</code>, <code>OrderLine</code>, <code>Bill</code>, <code>Receipt</code></td><td>readonly, равенство по значению</td></tr>
+<tr><td>Entity</td><td><code>Order</code></td><td>идентичность + жизненный цикл + инварианты</td></tr>
+<tr><td>Enum как тип и фабрика</td><td><code>Size</code>, <code>DrinkType::make()</code>, <code>Extra::wrap()</code>, <code>OrderStatus::canTransitionTo()</code>, <code>PaymentType</code></td><td>строка → тип; единственный <code>match</code></td></tr>
+<tr><td>Decorator</td><td><code>OatMilk(ExtraShot(Latte))</code></td><td>тот же интерфейс, вкладывается</td></tr>
+<tr><td>Strategy + композиция стратегий</td><td><code>BulkDiscount(3, new PercentDiscount(15))</code>, <code>BestOf([...])</code></td><td>поведение — объект; кубики</td></tr>
+<tr><td>Null Object</td><td><code>NoDiscount</code>, <code>NullNotifier</code></td><td>вместо null-проверок</td></tr>
+<tr><td>Repository</td><td><code>OrderRepository</code>: Eloquent / InMemory</td><td>домен не знает про БД</td></tr>
+<tr><td>Dependency Injection</td><td>конструкторы контроллеров и воркеров; <code>parent::__construct()</code> в командах</td><td>зависимости снаружи</td></tr>
+<tr><td>Dependency Inversion</td><td><code>Domain/</code> ↔ <code>Infrastructure/</code>; <code>AppServiceProvider</code></td><td>стрелка зависимости внутрь</td></tr>
+<tr><td>Тестовые двойники</td><td><code>FixedClock</code>, анонимный <code>CardGateway</code>, <code>RecordingEventPublisher</code>, <code>InMemoryOrderRepository</code></td><td>интерфейсы окупаются здесь</td></tr>
+<tr><td>SRP / OCP / LSP / ISP / DIP</td><td>раздел 8 + 5.4</td><td></td></tr>
+<tr><td>final / readonly / promotion / enum / named args / анонимные классы / <code>new</code> в дефолтах</td><td>везде</td><td>современный PHP</td></tr>
+</table>
+
+<h2 id="sec-11"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-11"></label>11. Глоссарий <a class="anchor" href="#sec-11">#</a></h2>
+<div class="glossary-item" id="g-0"><b>Класс</b> — описание типа объектов: какие свойства и методы. Создаётся один раз в коде.</div>
+<div class="glossary-item" id="g-1"><b>Объект (экземпляр)</b> — конкретная вещь, созданная по классу через <code>new</code>; со своим состоянием и идентичностью.</div>
+<div class="glossary-item" id="g-2"><b>Свойство</b> — переменная внутри объекта — его состояние.</div>
+<div class="glossary-item" id="g-3"><b>Метод</b> — функция внутри объекта — его поведение; имеет доступ к <code>$this</code>.</div>
+<div class="glossary-item" id="g-4"><b>Конструктор</b> — метод <code>__construct</code>, вызываемый при <code>new</code>; приводит объект в корректное начальное состояние. Место для проверок, которые нельзя обойти.</div>
+<div class="glossary-item" id="g-5"><b>Promotion</b> — объявление свойства прямо в параметре конструктора: <code>__construct(private readonly Size $size)</code>.</div>
+<div class="glossary-item" id="g-6"><b>Видимость</b> — <code>public</code> — всем; <code>protected</code> — классу и наследникам; <code>private</code> — только классу (не объекту: два объекта одного класса видят private друг друга).</div>
+<div class="glossary-item" id="g-7"><b>Инкапсуляция</b> — данные + код, который их меняет, в одном месте; снаружи — только безопасный API; цель — защита инвариантов.</div>
+<div class="glossary-item" id="g-8"><b>Инвариант</b> — условие, всегда истинное для корректного объекта: «сумма ≥ 0», «оплаченный заказ не меняется».</div>
+<div class="glossary-item" id="g-9"><b>Абстракция</b> — контракт без реализации: абстрактный класс или интерфейс. Клиентский код пишется в её терминах.</div>
+<div class="glossary-item" id="g-10"><b>Абстрактный класс</b> — класс с реализацией и «дырками»; не инстанцируется; один родитель у потомка.</div>
+<div class="glossary-item" id="g-11"><b>Интерфейс</b> — только сигнатуры; много интерфейсов у класса; реализации не делят код.</div>
+<div class="glossary-item" id="g-12"><b>Трейт</b> — вклеиваемый кусок кода; не контракт, не заменяем через DI.</div>
+<div class="glossary-item" id="g-13"><b>Enum</b> — тип с фиксированным набором значений и методами; замена «магическим строкам».</div>
+<div class="glossary-item" id="g-14"><b>Наследование</b> — отношение «является»: потомок получает члены родителя. Для общего неизменного скелета.</div>
+<div class="glossary-item" id="g-15"><b>Композиция</b> — отношение «содержит / использует»: объект держит другой и делегирует. Для всего, что меняется и комбинируется.</div>
+<div class="glossary-item" id="g-16"><b>Полиморфизм</b> — один вызов — разное поведение по реальному типу объекта, без <code>if</code> у вызывающего.</div>
+<div class="glossary-item" id="g-17"><b>Template Method</b> — родитель фиксирует скелет (<code>final</code>), дети реализуют шаги (<code>abstract</code>) или переопределяют хуки.</div>
+<div class="glossary-item" id="g-18"><b>Хук</b> — необязательный метод с дефолтным телом, который потомок может переопределить.</div>
+<div class="glossary-item" id="g-19"><b>Strategy</b> — заменяемое поведение как объект с интерфейсом, передаваемый снаружи.</div>
+<div class="glossary-item" id="g-20"><b>Decorator</b> — обёртка того же интерфейса, добавляющая поведение до/после делегирования; вкладывается в цепочку.</div>
+<div class="glossary-item" id="g-21"><b>Factory</b> — единственное место, где из «сырых» данных (строка) создаётся объект нужного класса.</div>
+<div class="glossary-item" id="g-22"><b>Value Object</b> — неизменяемое значение без идентичности; равенство по содержимому.</div>
+<div class="glossary-item" id="g-23"><b>Entity</b> — объект с идентичностью и жизненным циклом; меняет состояние только через методы с бизнес-именами.</div>
+<div class="glossary-item" id="g-24"><b>Repository</b> — интерфейс «сохранить / найти», скрывающий хранилище от домена.</div>
+<div class="glossary-item" id="g-25"><b>Null Object</b> — реализация интерфейса, которая ничего не делает; заменяет <code>null</code>.</div>
+<div class="glossary-item" id="g-26"><b>Dependency Injection</b> — объект получает зависимости снаружи (конструктор), а не создаёт их.</div>
+<div class="glossary-item" id="g-27"><b>Service Container</b> — механизм Laravel, создающий объекты по типам конструктора; биндинг связывает интерфейс с реализацией.</div>
+<div class="glossary-item" id="g-28"><b>Contextual binding</b> — «когда создаёшь X и ему нужен Y — дай Z»: разные реализации одного интерфейса для разных классов.</div>
+<div class="glossary-item" id="g-29"><b>Dependency Inversion</b> — зависеть от абстракций; стрелка зависимости от инфраструктуры к домену, не наоборот.</div>
+<div class="glossary-item" id="g-30"><b>Liskov Substitution</b> — реализацию можно подставить вместо абстракции без изменения поведения клиента — включая неписаные ожидания.</div>
+<div class="glossary-item" id="g-31"><b>Тестовый двойник</b> — реализация интерфейса для теста: stub (возвращает заготовленное), spy (запоминает вызовы), fake (упрощённая рабочая версия — InMemory).</div>
+<div class="glossary-item" id="g-32"><b>readonly</b> — свойство записывается один раз; защищает ссылку, не содержимое объекта по ней.</div>
+<div class="glossary-item" id="g-33"><b>final</b> — запрет наследования/переопределения: «расширяй композицией».</div>
+<div class="glossary-item" id="g-34"><b>self / static</b> — <code>self</code> — класс, где написан код; <code>static</code> — класс, у которого реально вызвали (late static binding).</div>
+<div class="glossary-item" id="g-35"><b>First-class callable</b> — <code>$obj-&gt;method(...)</code> — метод как замыкание (PHP 8.1).</div>
+
+<h2 id="sec-12"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-12"></label>12. Вопросы на понимание (и для собеседования) <a class="anchor" href="#sec-12">#</a></h2>
+
+<p>Письменно, со ссылкой на шаг и файл. Если ответ не опирается на код, который вы написали, — вернитесь к шагу.</p>
+<h3>Азбука</h3>
+<ul>
+<li>Чем объект отличается от массива с теми же полями? Назовите три гарантии, которые даёт <code>Order</code> и не даёт <code>['lines' =&gt; [...]]</code>.</li>
+<li>Почему у <code>Money</code> конструктор <code>private</code>? Что изменилось бы, будь он <code>public</code>?</li>
+<li>Что такое <code>$this</code>? Почему в <code>static</code>-методе его нет?</li>
+<li>Два объекта <code>Money::rub(5)</code>: <code>===</code> даёт false, <code>equals()</code> — true. Объясните оба результата.</li>
+<li>Что делает <code>readonly</code> и чего он не делает?</li>
+</ul>
+<h3>Принципы</h3>
+<ul>
+<li>На примере <code>Money</code>: что здесь абстракция, а что инкапсуляция?</li>
+<li>Почему <code>$size</code> в <code>Drink</code> стал <code>private</code>, хотя <code>protected</code> «работало»? Что означает «protected — это тоже контракт»?</li>
+<li>Хук vs абстрактный метод: когда что? Приведите оба из <code>Drink</code>.</li>
+<li>Наследование vs композиция: правило одной фразой и по примеру из лабы, где выбрано каждое. Почему <code>Drink</code> — наследование, а добавки — композиция?</li>
+<li>Что такое «полиморфизм на if'ах» и почему <code>match</code> в <code>DrinkType::make()</code> — не он?</li>
+<li>Что нарушит Liskov: декоратор, возвращающий отрицательную цену? <code>InMemoryOrderRepository</code>, сохраняющий по ссылке? Обсудите оба случая.</li>
+</ul>
+<h3>Абстрактный класс vs интерфейс</h3>
+<ul>
+<li>Почему <code>Drink</code> — абстрактный класс, а <code>Beverage</code> — интерфейс? Что бы сломалось, поменяй их местами?</li>
+<li><code>BeverageDecorator</code> — абстрактный класс, реализующий интерфейс не полностью. Зачем он, если каждый декоратор мог бы <code>implements Beverage</code> сам?</li>
+<li>Приведите класс из лабы, который мог бы реализовать два интерфейса одновременно, и зачем.</li>
+<li>Почему в лабе нет ни одного трейта? Где он был бы уместен?</li>
+</ul>
+<h3>Паттерны и DI</h3>
+<ul>
+<li>Strategy и Template Method оба «меняют поведение». В чём разница? Где в лабе они используются вместе?</li>
+<li>Почему декоратор обязан реализовывать тот же интерфейс, что оборачивает?</li>
+<li><code>Clock</code> — интерфейс с одним методом. Зачем? Что ещё из «внешнего мира» стоит прятать так же?</li>
+<li>Почему <code>Checkout</code> и <code>PaymentMethodFactory</code> резолвятся контейнером без биндинга, а <code>DiscountPolicy</code> — с биндингом?</li>
+<li><code>bind</code> vs <code>singleton</code> vs <code>instance</code>: по примеру на каждый из лабы.</li>
+<li>Почему <code>Domain/</code> не содержит <code>use Illuminate\...</code>? Что это даёт и чего стоит?</li>
+<li>Как feature-тест прошёл HTTP → контроллер → домен без Postgres и RabbitMQ? Какие два объекта подменены и почему этого достаточно?</li>
+</ul>
+<h3>Цена</h3>
+<ul>
+<li>Назовите три вещи, которые стали хуже к 5.4. Для какого проекта <code>lab0/01_arrays.php</code> — правильный ответ?</li>
+<li>Какие три класса вы бы удалили при упрощении и что потеряли бы?</li>
+</ul>
+
+<h2 id="sec-13"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-13"></label>13. Что дальше <a class="anchor" href="#sec-13">#</a></h2>
+
+<table>
+<tr><th>Тема</th><th>Что это</th><th>Связь с лабой</th><th>Почитать</th></tr>
+<tr><td>Outbox для <code>EventPublisher</code></td><td>события в таблицу в той же транзакции + relay</td><td>ещё одна реализация интерфейса из 5.1; контроллер не меняется — проверьте</td><td>ваш RabbitMQ Lab, раздел 5</td></tr>
+<tr><td>Идемпотентный воркер</td><td>дедупликация по message_id как декоратор/стратегия</td><td>«под капотом» 5.2; перенесите <code>IdempotentProcessor</code> из Worker Kit</td><td>OOP Lab — Worker Kit</td></tr>
+<tr><td>Обработчики вместо <code>process()</code> в воркере</td><td><code>PrepareOrderHandler</code>, <code>NotifyHandler</code> — классы, которые воркер только вызывает</td><td>вопрос 5.3; делает воркеры тестируемыми без AMQP</td><td>—</td></tr>
+<tr><td>Laravel Pipeline / middleware</td><td>встроенная цепочка обёрток</td><td>это Decorator замыканиями — сравните с <code>BeverageDecorator</code></td><td><a href="https://laravel.com/docs/13.x/helpers#pipeline" target="_blank">docs/helpers#pipeline</a></td></tr>
+<tr><td>Laravel Contracts и Manager</td><td>интерфейсы фреймворка + драйверы по конфигу</td><td>весь Laravel устроен как ваш <code>Notifier</code>: интерфейс + <code>match</code> по конфигу</td><td><a href="https://laravel.com/docs/13.x/contracts" target="_blank">docs/contracts</a></td></tr>
+<tr><td>Типизированные события</td><td><code>OrderPaid</code> как readonly-класс вместо <code>['order_id' =&gt; ...]</code></td><td>вопрос 5.1; сериализация VO ↔ JSON</td><td>—</td></tr>
+<tr><td>PHP 8.4: property hooks, asymmetric visibility</td><td><code>public private(set)</code>, геттеры в объявлении свойства</td><td>убрать часть методов-геттеров из <code>Order</code></td><td><a href="https://www.php.net/releases/8.4/ru.php" target="_blank">php.net/releases/8.4</a></td></tr>
+<tr><td>PHPStan level 8+</td><td>статический анализ</td><td>поймает <code>array</code> без типов элементов в <code>BestOf</code> и <code>publish()</code></td><td><a href="https://phpstan.org/user-guide/getting-started" target="_blank">phpstan.org</a></td></tr>
+<tr><td>DDD: агрегаты, доменные события, application layer</td><td>следующий уровень той же идеи Domain/Infrastructure</td><td>то, что вы сделали, — «лёгкий DDD»; книги дадут словарь</td><td>Вернон, «Implementing DDD», гл. 5–8</td></tr>
+<tr><td>Redis Lab</td><td>ваш следующий проект</td><td>кэш меню, лок на подготовку заказа, идемпотентность через SET NX — всё за интерфейсами</td><td>Redis_Lab_Plan.html</td></tr>
+</table>
+
+</main>
+</div>
+<a class="totop" href="#top">↑ Наверх</a>
+<script>
+(function () {
+  var KEY = 'cafe-oop-lab-progress', NAVKEY = 'cafe-oop-lab-nav';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var boxes = document.querySelectorAll('input.done');
+  function apply() {
+    var total = boxes.length, done = 0;
+    boxes.forEach(function (b) {
+      var k = b.dataset.key, on = !!state[k];
+      b.checked = on; if (on) done++;
+      var host = b.closest('.step') || b.closest('h2');
+      if (host) host.classList.toggle('is-done', on);
+      var nav = document.querySelector('.sidebar a[data-key="' + k + '"]');
+      if (nav) nav.classList.toggle('done', on);
+    });
+    document.getElementById('progress-fill').style.width = (total ? done / total * 100 : 0) + '%';
+    document.getElementById('progress-text').textContent = 'Пройдено: ' + done + ' / ' + total;
+  }
+  boxes.forEach(function (b) {
+    b.addEventListener('change', function () {
+      state[b.dataset.key] = b.checked;
+      localStorage.setItem(KEY, JSON.stringify(state));
+      apply();
+    });
+  });
+  document.getElementById('reset-progress').addEventListener('click', function () {
+    if (confirm('Сбросить все отметки?')) { state = {}; localStorage.removeItem(KEY); apply(); }
+  });
+  apply();
+
+  var toggle = document.getElementById('nav-toggle');
+  function setNav(collapsed) {
+    document.body.classList.toggle('nav-collapsed', collapsed);
+    localStorage.setItem(NAVKEY, collapsed ? '1' : '0');
+    toggle.textContent = collapsed ? '☰' : '✕';
+    toggle.title = collapsed ? 'Показать оглавление' : 'Скрыть оглавление';
+  }
+  toggle.addEventListener('click', function () { setNav(!document.body.classList.contains('nav-collapsed')); });
+  setNav(localStorage.getItem(NAVKEY) === '1' || window.innerWidth < 900);
+
+  // клик по чекбоксу в заголовке не должен вести по якорю
+  document.querySelectorAll('.done-label').forEach(function (l) { l.addEventListener('click', function (e) { e.stopPropagation(); }); });
+})();
+</script>
+</body>
+</html>
