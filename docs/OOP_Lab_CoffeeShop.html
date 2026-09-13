@@ -539,11 +539,14 @@ services:
 
   rabbitmq:
     image: rabbitmq:4-management
-    environment: { RABBITMQ_DEFAULT_USER: cafe, RABBITMQ_DEFAULT_PASS: cafe }   # пользователя создаёт env, как в RabbitMQ Lab
     ports: ["5672:5672", "15672:15672"]
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    # RABBITMQ_DEFAULT_USER/PASS сюда не добавляем: образ игнорирует их, если задан
+    # load_definitions (rabbitmq.conf) — пользователя cafe/cafe создаёт только
+    # блок "users"/"permissions" в definitions.json ниже. Без него — Not_Authorized
+    # в UI даже с "правильными" env, потому что образ вообще не создаст пользователя.
 
   mailpit:
     image: axllent/mailpit

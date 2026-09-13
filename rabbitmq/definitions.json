@@ -1,0 +1,18 @@
+{
+  "vhosts": [{ "name": "/" }],
+  "users": [
+    { "name": "cafe", "password": "cafe", "tags": ["administrator"] }
+  ],
+  "permissions": [
+    { "user": "cafe", "vhost": "/", "configure": ".*", "write": ".*", "read": ".*" }
+  ],
+  "exchanges": [{ "name": "cafe.events", "vhost": "/", "type": "topic", "durable": true }],
+  "queues": [
+    { "name": "barista.queue", "vhost": "/", "durable": true, "arguments": { "x-queue-type": "classic" } },
+    { "name": "notify.queue",  "vhost": "/", "durable": true, "arguments": { "x-queue-type": "classic" } }
+  ],
+  "bindings": [
+    { "source": "cafe.events", "vhost": "/", "destination": "barista.queue", "destination_type": "queue", "routing_key": "order.paid" },
+    { "source": "cafe.events", "vhost": "/", "destination": "notify.queue",  "destination_type": "queue", "routing_key": "order.ready" }
+  ]
+}
