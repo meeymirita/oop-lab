@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17
+    environment: { POSTGRES_DB: cafe, POSTGRES_USER: cafe, POSTGRES_PASSWORD: cafe }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    # пользователя cafe/cafe создаёт rabbitmq/definitions.json (load_definitions) —
+    # RABBITMQ_DEFAULT_USER/PASS образ игнорирует, если definitions.json уже задаёт пользователей
+    ports: ["5672:5672", "15672:15672"]
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+
+  mailpit:
+    image: axllent/mailpit
+    ports: ["8025:8025", "1025:1025"]
+
+  app: &app
+    build: ./laravel-app
+    volumes: [./laravel-app:/app]
+    working_dir: /app
+    env_file: ./laravel-app/.env
+    depends_on: [postgres, rabbitmq, mailpit]
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports: ["8000:8000"]
+
+  barista-worker:
+    <<: *app
+    ports: []
+    command: php artisan worker:barista
+    restart: unless-stopped
+    profiles: [workers]            # поднимем в сессии 5: docker compose --profile workers up -d
+
+  notify-worker:
+    <<: *app
+    ports: []
+    command: php artisan worker:notify
+    restart: unless-stopped
+    profiles: [workers]
+
+volumes:
+  pgdata:
