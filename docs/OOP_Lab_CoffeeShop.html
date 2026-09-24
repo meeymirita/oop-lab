@@ -171,7 +171,7 @@
 <p class="subtitle">Объектно-ориентированное программирование на PHP 8.4 / Laravel 13 — с нуля, на маленьком API кофейни. Money, напитки, добавки-декораторы, скидки и оплаты-стратегии, RabbitMQ-воркеры бариста и уведомлений, тесты без базы и брокера.</p>
 
 <div class="toc"><b>Как устроена лаба.</b> Разделы 1–8 — теория: от «зачем вообще объекты» до паттернов и SOLID, каждый пункт на примере кофейни. Раздел 9 — пять сессий заданий: сначала чистый PHP без фреймворка (чтобы увидеть ООП без магии Laravel), потом домен, API, стратегии, воркеры на RabbitMQ и тесты. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя». Разделы 10–13 — чек-лист, глоссарий, вопросы, что дальше. Галочки сохраняются в браузере.
-<p class="small">Отдельный репозиторий, ни от чего не зависит. Стек — как в RabbitMQ Lab: Laravel 13 (PHP 8.4), PostgreSQL, RabbitMQ с Management UI, Mailpit, всё в Docker. Брокер появляется только в сессии 5 и делает ровно то, что вы уже умеете: один topic-exchange, две очереди, воркеры как Artisan-команды.</p></div>
+<p class="small">Отдельный репозиторий, ни от чего не зависит. Стек такой же, какой встретите в RabbitMQ Lab (она впереди по программе): Laravel 13 (PHP 8.4), PostgreSQL, RabbitMQ с Management UI, Mailpit, всё в Docker. Брокер появляется только в сессии 5 и делает ровно то, что несложно объяснить по ходу: один topic-exchange, две очереди, воркеры как Artisan-команды.</p></div>
 
 <h2 id="sec-1"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-1"></label>1. Зачем вообще ООП: массив с функциями vs объект <a class="anchor" href="#sec-1">#</a></h2>
 
@@ -194,7 +194,7 @@ function itemPrice(array $item): int
 <tr><td>Эспрессо «большим» не бывает</td><td>нужен <code>if</code> где-то… где? В <code>itemPrice</code>? В контроллере? В обоих?</td><td>конструктор <code>Espresso</code> сам отказывается создавать такой объект — проверка <b>в одном месте</b>, обойти нельзя</td></tr>
 <tr><td>Количество = −3</td><td>цена отрицательная, никто не заметил</td><td><code>$order-&gt;add($latte, -3)</code> бросает исключение — объект защищает своё состояние</td></tr>
 <tr><td>Добавить напиток «чай», у которого нет размеров, но есть время заваривания</td><td>ещё ветка в <code>match</code>, ещё <code>if</code> в размерах, и все функции, где встречается <code>'drink'</code></td><td>новый класс <code>Tea extends Drink</code>; старый код не трогаем</td></tr>
-<tr><td>Оплатить заказ: наличные, карта, бонусы</td><td><code>switch ($method)</code> в контроллере; тестировать — только с настоящим шлюзом</td><td>три класса, реализующих <code>PaymentMethod</code>; в тесте подставляем четвёртый, поддельный</td></tr>
+<tr><td>Оплатить заказ: наличные, карта (бонусы — самостоятельное упражнение)</td><td><code>switch ($method)</code> в контроллере; тестировать — только с настоящим шлюзом</td><td>два класса, реализующих <code>PaymentMethod</code>; в тесте подставляем поддельный шлюз, реализующий <code>CardGateway</code></td></tr>
 </table>
 <p>Общий знаменатель: у массива <b>нет поведения и нет гарантий</b>. Он хранит что угодно, и вся логика живёт снаружи — в функциях, которые надо не забыть вызвать. Объект — это данные <i>плюс</i> код, который единственный имеет право их менять. ООП начинается ровно здесь: когда вы говорите «пусть заказ сам знает, что с ним можно делать».</p>
 <div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>ООП — не «классы вместо функций» и не «паттерны, чтобы было красиво». Это способ провести <b>границы</b>: что снаружи (контракт — то, что объект обещает), что внутри (реализация — то, как он это делает), кто кого знает и кого можно заменить. Каждое задание — про одну такую границу. К концу у вас будет ~30 маленьких классов, и каждый будет отвечать на вопрос «за что я отвечаю» одной фразой.</p></div>
@@ -400,7 +400,7 @@ Drink                                          Beverage (interface)
 <p>Паттерн — имя для решения, к которому вы бы и так пришли. Знать имя полезно, чтобы обсуждать код с другими.</p>
 <table>
 <tr><th>Паттерн</th><th>Идея</th><th>Принцип</th><th>В проекте</th><th>Сессия</th></tr>
-<tr><td><b>Value Object</b></td><td>маленький неизменяемый объект-значение; равенство по содержимому</td><td>инкапсуляция, абстракция над «сырыми» числами</td><td><code>Money</code>, <code>OrderLine</code>, <code>Bill</code>, <code>Receipt</code></td><td>1–2</td></tr>
+<tr><td><b>Value Object</b></td><td>маленький неизменяемый объект-значение; равенство по содержимому</td><td>инкапсуляция, абстракция над «сырыми» числами</td><td><code>Money</code>, <code>OrderLine</code>, <code>Bill</code>, <code>Receipt</code></td><td>1–4</td></tr>
 <tr><td><b>Template Method</b></td><td>родитель фиксирует скелет, дети заполняют шаги</td><td>наследование + полиморфизм</td><td><code>Drink::price()/name()</code>, <code>AbstractAmqpWorker::handle()</code></td><td>2, 5</td></tr>
 <tr><td><b>Factory (через enum)</b></td><td>одно место, где строка из запроса превращается в объект</td><td>полиморфизм: <code>match</code> есть, но ровно один</td><td><code>DrinkType::make()</code>, <code>Extra::wrap()</code>, <code>PaymentType</code></td><td>2–4</td></tr>
 <tr><td><b>Decorator</b></td><td>обёртка того же интерфейса, добавляющая поведение</td><td>композиция + интерфейс</td><td><code>OatMilk</code>, <code>ExtraShot</code>, <code>Syrup</code> вокруг <code>Beverage</code></td><td>3</td></tr>
@@ -419,7 +419,7 @@ Drink                                          Beverage (interface)
 <tr><td>БД</td><td>PostgreSQL 17</td><td>заказы (jsonb для строк заказа)</td></tr>
 <tr><td>Брокер</td><td>RabbitMQ 4 + Management</td><td>события <code>order.paid</code> / <code>order.ready</code>; топология как код (definitions.json)</td></tr>
 <tr><td>Почта</td><td>Mailpit</td><td>уведомление «заказ готов»</td></tr>
-<tr><td>Воркеры</td><td>Artisan-команды в отдельных контейнерах</td><td>как в RabbitMQ Lab: <code>worker:barista</code>, <code>worker:notify</code></td></tr>
+<tr><td>Воркеры</td><td>Artisan-команды в отдельных контейнерах</td><td>такой же подход встретите в RabbitMQ Lab: <code>worker:barista</code>, <code>worker:notify</code></td></tr>
 </table>
 <pre>coffee-shop-lab/
 ├── docker-compose.yml
@@ -512,6 +512,12 @@ load_definitions = /etc/rabbitmq/definitions.json</code></pre>
 <pre><code>// rabbitmq/definitions.json — топология понадобится только в сессии 5, но пусть поднимается сразу
 {
   "vhosts": [{ "name": "/" }],
+  "users": [
+    { "name": "cafe", "password": "cafe", "tags": ["administrator"] }
+  ],
+  "permissions": [
+    { "user": "cafe", "vhost": "/", "configure": ".*", "write": ".*", "read": ".*" }
+  ],
   "exchanges": [{ "name": "cafe.events", "vhost": "/", "type": "topic", "durable": true }],
   "queues": [
     { "name": "barista.queue", "vhost": "/", "durable": true, "arguments": { "x-queue-type": "classic" } },
@@ -606,7 +612,7 @@ docker compose exec app php artisan migrate
 curl http://localhost:8000/up            # Laravel health-check
 # UI RabbitMQ: http://localhost:15672 (cafe/cafe) — exchange cafe.events и две очереди уже есть</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p><code>/up</code> отвечает 200, миграции прошли, в RabbitMQ UI видны <code>cafe.events</code>, <code>barista.queue</code>, <code>notify.queue</code>. Воркеры пока не запущены (profile <code>workers</code>).</p></div>
-<div class="why"><b>Зачем:</b> Стенд тот же, что в RabbitMQ Lab, — чтобы ничего нового про инфраструктуру не учить. <code>profiles: [workers]</code> — команды воркеров появятся только в сессии 5, а до того контейнеры не должны падать в рестарт-цикле. <code>lab0/</code> внутри laravel-app — просто чтобы запускать скрипты тем же контейнером с PHP 8.4.</div>
+<div class="why"><b>Зачем:</b> Стенд такой же, каким будет в RabbitMQ Lab, — чтобы позже не учить инфраструктуру заново. <code>profiles: [workers]</code> — команды воркеров появятся только в сессии 5, а до того контейнеры не должны падать в рестарт-цикле. <code>lab0/</code> внутри laravel-app — просто чтобы запускать скрипты тем же контейнером с PHP 8.4.</div>
 </div></div>
 <div class="step" id="step-1-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-2"></label><span class="num">Шаг 1.2</span>Точка отсчёта: касса на массивах — <span class="file">lab0/01_arrays.php</span><a class="anchor" href="#step-1-2">#</a></span><div class="step-body">
 <p>Начинаем без Laravel. Файл — скрипт, запуск — <code>docker compose exec app php lab0/01_arrays.php</code>. Сначала «как без ООП»:</p><pre><code>&lt;?php
@@ -638,7 +644,7 @@ echo 'Итого: ' . orderTotal($order) . " ₽\n";</code></pre>
 // (в) количество:          'qty' =&gt; -2                               — итог станет отрицательным</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>(а) PHP Fatal error:  Uncaught UnhandledMatchError: Unhandled match case 'late'
 (б) Итого: 1150 ₽      ← молча, никакой ошибки
-(в) Итого: 150 ₽       ← −920 + 150; тоже молча</pre><p>Из трёх ошибок PHP заметил одну, и ту — в момент подсчёта, а не в момент, когда неправильный заказ появился. Запомните эти три случая: сессия 1 закончится тем, что все три станут невозможными.</p></div>
+(в) Итого: -770 ₽      ← −920 + 150; тоже молча</pre><p>Из трёх ошибок PHP заметил одну, и ту — в момент подсчёта, а не в момент, когда неправильный заказ появился. Запомните эти три случая: сессия 1 закончится тем, что все три станут невозможными.</p></div>
 <div class="why"><b>Зачем:</b> Это «нулевая точка». Массив принимает что угодно, функции доверяют массиву. Никто не отвечает за то, чтобы заказ был корректным. Всё ООП в лабе — про то, чтобы у каждого правила появился хозяин.</div>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Куда бы вы добавили проверку «эспрессо не бывает L» в этом коде? Сколько мест надо будет помнить, когда таких правил станет десять?</li></ul></div>
 </div></div>
@@ -1294,7 +1300,7 @@ final class BeverageDecoratorTest extends TestCase
         $this-&gt;assertSame('Вода + овсяное молоко', Extra::Oat-&gt;wrap($free)-&gt;name());
     }
 }</code></pre>
-<div class="why"><b>Зачем:</b> <b>Decorator</b> = композиция + общий интерфейс. Три класса добавок дают 2⁴ = 16 комбинаций с любым из четырёх напитков — против 64 классов при наследовании. <b>Liskov:</b> <code>OatMilk</code> — полноценный <code>Beverage</code>, касса не отличит его от <code>Latte</code>. Второй тест показывает главную силу интерфейса: его реализует <i>анонимный класс из четырёх строк</i>, не имеющий отношения к <code>Drink</code>, — и декоратор работает. С абстрактным классом так не получилось бы.</div>
+<div class="why"><b>Зачем:</b> <b>Decorator</b> = композиция + общий интерфейс. Четыре добавки (<code>enum Extra</code>) дают 2⁴ = 16 комбинаций с любым из четырёх напитков — против 64 классов при наследовании. <b>Liskov:</b> <code>OatMilk</code> — полноценный <code>Beverage</code>, касса не отличит его от <code>Latte</code>. Второй тест показывает главную силу интерфейса: его реализует <i>анонимный класс из четырёх строк</i>, не имеющий отношения к <code>Drink</code>, — и декоратор работает. С абстрактным классом так не получилось бы.</div>
 <details class="deep"><summary>🔬 Под капотом: BeverageDecorator — abstract class, реализующий интерфейс не полностью</summary><div class="deep-body">
 
 <p>PHP позволяет абстрактному классу объявить <code>implements Beverage</code> и не реализовать методы — обязанность переходит к первому неабстрактному потомку. Это единственное место, где мы используем абстрактный класс для декораторов: у всех одинаковый конструктор и поле <code>$inner</code> — реально общий скелет. <code>$inner</code> — <code>protected</code> (наследникам нужен) и <code>readonly</code> (подменять обёрнутый напиток после сборки — источник неотлаживаемых багов).</p>
@@ -1819,12 +1825,24 @@ final class DiscountPolicyTest extends TestCase
 <div class="step" id="step-4-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-2"></label><span class="num">Шаг 4.2</span>Checkout + Bill, PaymentMethod (Cash, Card + CardGateway), PaymentType, POST /api/orders/{id}/pay<a class="anchor" href="#step-4-2">#</a></span><div class="step-body">
 <p>Касса собирает счёт (subtotal, скидка, итог), а способ оплаты — вторая стратегия. Оплата картой ходит во внешний шлюз — его тоже прячем за интерфейс, чтобы в тесте не платить по-настоящему.</p><pre><code>&lt;?php
 // app/Domain/Pricing/Bill.php
+declare(strict_types=1);
+
+namespace App\Domain\Pricing;
+
+use App\Domain\Money;
+
 final readonly class Bill
 {
     public function __construct(public Money $subtotal, public Money $discount, public Money $total) {}
 }
 
 // app/Domain/Pricing/Checkout.php
+declare(strict_types=1);
+
+namespace App\Domain\Pricing;
+
+use App\Domain\Order\Order;
+
 final class Checkout
 {
     public function __construct(private readonly DiscountPolicy $discount) {}
@@ -1853,15 +1871,32 @@ interface PaymentMethod
 }
 
 // app/Domain/Payment/Receipt.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
+use App\Domain\Money;
+
 final readonly class Receipt
 {
     public function __construct(public string $method, public Money $amount, public string $reference) {}
 }
 
 // app/Domain/Payment/PaymentFailed.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
 final class PaymentFailed extends \DomainException {}
 
 // app/Domain/Payment/CashPayment.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
+use App\Domain\Money;
+use App\Domain\Order\Order;
+
 final class CashPayment implements PaymentMethod
 {
     public function charge(Money $amount, Order $order): Receipt
@@ -1871,6 +1906,12 @@ final class CashPayment implements PaymentMethod
 }
 
 // app/Domain/Payment/CardGateway.php — внешний мир за интерфейсом
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
+use App\Domain\Money;
+
 interface CardGateway
 {
     /** @return string код авторизации  @throws PaymentFailed */
@@ -1878,6 +1919,13 @@ interface CardGateway
 }
 
 // app/Domain/Payment/CardPayment.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
+use App\Domain\Money;
+use App\Domain\Order\Order;
+
 final class CardPayment implements PaymentMethod
 {
     public function __construct(private readonly CardGateway $gateway) {}
@@ -1890,6 +1938,10 @@ final class CardPayment implements PaymentMethod
 }
 
 // app/Domain/Payment/PaymentType.php
+declare(strict_types=1);
+
+namespace App\Domain\Payment;
+
 enum PaymentType: string
 {
     case Cash = 'cash';
@@ -1903,6 +1955,13 @@ enum PaymentType: string
 }</code></pre>
 <pre><code>&lt;?php
 // app/Infrastructure/Payment/FakeCardGateway.php — «банк», который отклоняет карту по флагу
+declare(strict_types=1);
+
+namespace App\Infrastructure\Payment;
+
+use App\Domain\Money;
+use App\Domain\Payment\{CardGateway, PaymentFailed};
+
 final class FakeCardGateway implements CardGateway
 {
     public function __construct(private readonly bool $declines) {}
@@ -1916,6 +1975,11 @@ final class FakeCardGateway implements CardGateway
 
 // app/Infrastructure/Payment/PaymentMethodFactory.php — enum не может иметь зависимостей, поэтому фабрика — класс,
 // а объекты создаёт контейнер: CardPayment получит CardGateway автоматически
+declare(strict_types=1);
+
+namespace App\Infrastructure\Payment;
+
+use App\Domain\Payment\{PaymentMethod, PaymentType};
 use Psr\Container\ContainerInterface;
 
 final class PaymentMethodFactory
@@ -2001,9 +2065,12 @@ $this-&gt;app-&gt;bind(DiscountPolicy::class, fn (Application $app) =&gt; match 
       -d '{"email":"ann@lab.test","items":[{"drink":"latte","size":"L","extras":["oat"],"qty":3}]}' | jq -r .id)
 curl -s -X POST localhost:8000/api/orders/$ID/pay -H 'Content-Type: application/json' -d '{"method":"card"}' | jq
 
-# смена акции — без правки кода:
-CAFE_DISCOUNT=bulk docker compose up -d --force-recreate app      # (создайте новый заказ и оплатите)
-CAFE_CARD_DECLINES=true docker compose up -d --force-recreate app # → 402, заказ остаётся draft</code></pre>
+# смена акции — без правки кода: только laravel-app/.env (compose передаёт в контейнер его, а не переменные шелла)
+sed -i 's/^CAFE_DISCOUNT=.*/CAFE_DISCOUNT=bulk/' laravel-app/.env
+docker compose up -d --force-recreate app                          # (создайте новый заказ и оплатите)
+sed -i 's/^CAFE_CARD_DECLINES=.*/CAFE_CARD_DECLINES=true/' laravel-app/.env
+docker compose up -d --force-recreate app                          # → 402, заказ остаётся draft
+sed -i -e 's/^CAFE_DISCOUNT=.*/CAFE_DISCOUNT=none/' -e 's/^CAFE_CARD_DECLINES=.*/CAFE_CARD_DECLINES=false/' laravel-app/.env   # вернуть как было</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>{
   "bill":    { "subtotal": "1 170,00 ₽", "discount": "0,00 ₽", "total": "1 170,00 ₽" },
   "receipt": { "method": "card", "amount": "1 170,00 ₽", "reference": "auth-3f9a12c0" },
@@ -2101,7 +2168,7 @@ class HappyHourOrder   extends Order           { protected function discount(): 
 <div class="next-box"><span class="tag">ИТОГ СЕССИИ 4 → ПЕРЕД СЕССИЕЙ 5</span><ul>
 <li>✅ <code>git commit -am "session 4: discounts, payments, DI"</code></li>
 <li>📝 Таблица из 4.4 и ответы 4.1–4.4 в <span class="file">docs/oop-notes.md</span>.</li>
-<li>📖 Освежить из RabbitMQ Lab: раздел про consumer, ack/nack, prefetch. В сессии 5 базовый воркер — упрощённый <code>AbstractAmqpWorker</code> оттуда.</li>
+<li>📖 Почитать про AMQP consumer, ack/nack, prefetch (<a href="https://www.rabbitmq.com/docs/consumers" target="_blank">RabbitMQ docs: Consumers</a>) — в сессии 5 вы напишете упрощённый <code>AbstractAmqpWorker</code>; подробнее эти механизмы разберёте в RabbitMQ Lab.</li>
 </ul></div>
 <div class="session-banner" id="session-5">Сессия <a href="#session-5" style="color:#fff;text-decoration:none">5</a> — RabbitMQ: события, воркеры бариста и уведомлений, подмена инфраструктуры в тестах <span>~3 часа</span></div>
 <div class="step" id="step-5-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-1"></label><span class="num">Шаг 5.1</span>EventPublisher: интерфейс в домене, AMQP-реализация в инфраструктуре, публикация order.paid<a class="anchor" href="#step-5-1">#</a></span><div class="step-body">
@@ -2126,7 +2193,13 @@ return [
     'exchange' =&gt; 'cafe.events',
 ];
 
-// app/Infrastructure/Amqp/AmqpConnectionFactory.php — как в RabbitMQ Lab
+// app/Infrastructure/Amqp/AmqpConnectionFactory.php — похожий класс встретите в RabbitMQ Lab
+declare(strict_types=1);
+
+namespace App\Infrastructure\Amqp;
+
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+
 final class AmqpConnectionFactory
 {
     public function connect(): AMQPStreamConnection
@@ -2205,12 +2278,12 @@ curl -s -X POST localhost:8000/api/orders/$ID/pay -H 'Content-Type: application/
 <div class="why"><b>Зачем:</b> <b>Инкапсуляция инфраструктуры:</b> контроллер зовёт <code>publish('order.paid', [...])</code> и не знает про exchange, routing key, persistent, message_id — всё это внутри <code>AmqpEventPublisher</code>. Ленивое соединение — тоже инкапсуляция: снаружи не видно, открыт канал или нет; <code>__destruct</code> закрывает за собой. <b>Интерфейс в Domain, реализация в Infrastructure</b> — та же граница, что и у <code>OrderRepository</code>. <b>singleton</b>: одно соединение на процесс, а не на публикацию.</div>
 <details class="deep"><summary>🔬 Под капотом: это не outbox — и почему здесь это сознательно</summary><div class="deep-body">
 
-<p>В RabbitMQ Lab вы делали outbox, потому что <code>save()</code> и <code>publish()</code> — две системы, и между ними процесс может упасть (dual write). Здесь публикуем напрямую после сохранения — упрощение ради фокуса на ООП. Но заметьте: благодаря интерфейсу <code>EventPublisher</code> переход на outbox — это <b>ещё одна реализация</b> (<code>OutboxEventPublisher</code>, который пишет в таблицу) плюс relay-команда, и контроллер не меняется. Это упражнение для «что дальше».</p>
+<p>В RabbitMQ Lab вы будете делать outbox, потому что <code>save()</code> и <code>publish()</code> — две системы, и между ними процесс может упасть (dual write). Здесь публикуем напрямую после сохранения — упрощение ради фокуса на ООП. Но заметьте: благодаря интерфейсу <code>EventPublisher</code> переход на outbox — это <b>ещё одна реализация</b> (<code>OutboxEventPublisher</code>, который пишет в таблицу) плюс relay-команда, и контроллер не меняется. Это упражнение для «что дальше».</p>
 </div></details>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>publish()</code> принимает <code>array $payload</code>, а не объект <code>Order</code>? Что было бы, если бы событие содержало объект?</li><li><code>AmqpEventPublisher</code> — <code>singleton</code>, <code>DiscountPolicy</code> — <code>bind</code>. Объясните разницу через «есть ли у объекта дорогое состояние».</li></ul></div>
 </div></div>
 <div class="step" id="step-5-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-2"></label><span class="num">Шаг 5.2</span>AbstractAmqpWorker, worker:barista, worker:notify, Notifier (Log / Mail / Null)<a class="anchor" href="#step-5-2">#</a></span><div class="step-body">
-<p>Базовый воркер — упрощённый <code>AbstractAmqpWorker</code> из RabbitMQ Lab (без идемпотентности и retry — их вы умеете добавлять). Новое здесь одно: <b>зависимости воркера приходят в конструктор</b>, потому что <code>handle()</code> у родителя <code>final</code>.</p><pre><code>&lt;?php
+<p>Базовый воркер — упрощённый <code>AbstractAmqpWorker</code>: полную версию, с идемпотентностью и retry, вы напишете позже в RabbitMQ Lab, а здесь — минимум для одного happy path. Новое здесь одно: <b>зависимости воркера приходят в конструктор</b>, потому что <code>handle()</code> у родителя <code>final</code>.</p><pre><code>&lt;?php
 // app/Console/Commands/Workers/AbstractAmqpWorker.php
 declare(strict_types=1);
 
@@ -2363,7 +2436,10 @@ $this-&gt;app-&gt;bind(Notifier::class, fn () =&gt; match (config('cafe.notifier
     'null'  =&gt; new NullNotifier(),
     default =&gt; new LogNotifier(),
 });</code></pre>
-<pre><code>CAFE_NOTIFIER=mail docker compose --profile workers up -d --build
+<pre><code># CAFE_NOTIFIER, как и CAFE_DISCOUNT, читается контейнером только из laravel-app/.env
+# (env_file, не переменная окружения хоста) — правим файл и пересоздаём контейнер:
+sed -i 's/^CAFE_NOTIFIER=.*/CAFE_NOTIFIER=mail/' laravel-app/.env
+docker compose --profile workers up -d --build --force-recreate
 docker compose logs -f barista-worker notify-worker &amp;
 # сообщение из 5.1 всё ещё лежит в barista.queue — воркер подхватит его сразу
 ID=$(curl -s -X POST localhost:8000/api/orders -H 'Content-Type: application/json' \
@@ -2380,7 +2456,7 @@ notify-worker   |    ✔ ack
 <div class="why"><b>Зачем:</b> <b>Constructor injection в команду.</b> <code>handle()</code> родителя <code>final</code> с фиксированной сигнатурой — значит, наследник не может «попросить» зависимости через параметры <code>handle()</code>. Он просит их в конструкторе, а Laravel создаёт команды через контейнер. Заметьте <code>parent::__construct()</code>: <code>Command</code> в конструкторе читает <code>$signature</code>; забудете — команда не зарегистрируется. <b>Тот же интерфейс — три поведения</b>: <code>Notifier</code> в проде шлёт письмо, в деве пишет в лог, в тесте молчит; воркер одинаков. <b>Template Method снова</b>: цикл consume — общий, <code>process()</code> — дырка. Сравните с сессией 2: <code>Drink::price()</code> устроен так же.</div>
 <details class="deep"><summary>🔬 Под капотом: что произойдёт при повторной доставке, и почему это упражнение, а не ошибка лабы</summary><div class="deep-body">
 
-<p>Убейте <code>barista-worker</code> между <code>save()</code> и <code>ack</code> (<code>docker compose kill barista-worker</code> в трёхсекундное окно <code>sleep</code>). После рестарта сообщение придёт с <code>REDELIVERED</code>, заказ уже <code>ready</code>, <code>markReady()</code> бросит <code>DomainException</code> «переход ready → ready запрещён», воркер сделает nack без requeue — сообщение пропадёт, <code>order.ready</code> не будет опубликован второй раз… но и первый мог не успеть. Вы знаете два решения из RabbitMQ Lab: идемпотентность по message_id и retry-цепочка. Оба добавляются как стратегии/декораторы к этому базовому классу — если хотите, это финальное упражнение по мотивам «OOP Lab — Worker Kit».</p>
+<p>Убейте <code>barista-worker</code> между <code>save()</code> и <code>ack</code> (<code>docker compose kill barista-worker</code> в трёхсекундное окно <code>sleep</code>). После рестарта сообщение придёт с <code>REDELIVERED</code>, заказ уже <code>ready</code>, <code>markReady()</code> бросит <code>DomainException</code> «переход ready → ready запрещён», воркер сделает nack без requeue — сообщение пропадёт, <code>order.ready</code> не будет опубликован второй раз… но и первый мог не успеть. В RabbitMQ Lab вы увидите два готовых решения этой проблемы: идемпотентность по message_id и retry через заголовок <code>x-retry-count</code> с каскадом TTL-очередей в DLX. Здесь, пока брокера в этом виде ещё не было, оба решения можно добавить как стратегии/декораторы к этому базовому классу — если хотите, это необязательное финальное упражнение.</p>
 </div></details>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему интерфейс <code>Notifier</code> лежит в <code>Domain/Order/</code>, а его реализации — в <code>Infrastructure/</code>? Кто от кого зависит?</li><li><code>MailNotifier</code> молча ничего не делает, если e-mail не указан. Это Null Object внутри реализации или нарушение контракта? Как бы вы сформулировали контракт <code>orderReady()</code> в docblock, чтобы это было однозначно?</li></ul></div>
 </div></div>
@@ -2488,12 +2564,12 @@ final class OrderFlowTest extends TestCase
 <details class="deep"><summary>🔬 Под капотом: instance() vs bind(), и почему InMemory-репозиторий «сохраняет» без копирования</summary><div class="deep-body">
 
 <p><code>$this-&gt;app-&gt;instance(X::class, $obj)</code> — «на этот интерфейс всегда отдавай вот этот объект»; перекрывает биндинг из провайдера на время теста. Именно поэтому тест держит ссылку на <code>$this-&gt;events</code> — это тот же объект, который получит контроллер.</p>
-<p><code>InMemoryOrderRepository::save()</code> кладёт в массив <i>ссылку</i> на объект; <code>get()</code> вернёт тот же объект. Значит, изменения заказа «сохраняются» даже без вызова <code>save()</code> — в отличие от Eloquent-реализации. Это тонкое расхождение семантик двух реализаций одного интерфейса (как memory-драйвер идемпотентности в Worker Kit): интерфейс гарантирует наличие метода, но не одинаковость всех побочных эффектов. Хотите строже — клонируйте при <code>save()</code> и <code>get()</code>.</p>
+<p><code>InMemoryOrderRepository::save()</code> кладёт в массив <i>ссылку</i> на объект; <code>get()</code> вернёт тот же объект. Значит, изменения заказа «сохраняются» даже без вызова <code>save()</code> — в отличие от Eloquent-реализации. Это тонкое расхождение семантик двух реализаций одного интерфейса: интерфейс гарантирует наличие метода, но не одинаковость всех побочных эффектов. Хотите строже — клонируйте при <code>save()</code> и <code>get()</code>.</p>
 </div></details>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Что подменил бы feature-тест для сценария «бариста отметил готовность»? Напишите его: создать оплаченный заказ в InMemory-репозитории, вызвать <code>BaristaWorkerCommand::process()</code>… — стоп, он <code>protected</code>. Как протестировать воркер, не делая метод публичным? (Подсказка: вынести <code>process()</code> в отдельный класс-обработчик <code>PrepareOrderHandler</code>, который воркер только вызывает. Это SRP: воркер — про AMQP, обработчик — про бизнес.)</li></ul></div>
 </div></div>
 <div class="step" id="step-5-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-4"></label><span class="num">Шаг 5.4</span>Финал: карта классов и таблица «до / после»<a class="anchor" href="#step-5-4">#</a></span><div class="step-body">
-<p>Что получилось. Проверьте по своему репозиторию:</p><pre>app/Domain/                             ← 27 классов, 0 зависимостей от Laravel
+<p>Что получилось. Проверьте по своему репозиторию:</p><pre>app/Domain/                             ← 25 классов (без enum'ов и интерфейсов), 0 зависимостей от Laravel
   Money                                 VO, private-конструктор, static-фабрики
   Menu/    Size DrinkType Extra         enum с методами (фабрики)
            Beverage                     interface
@@ -2515,7 +2591,7 @@ app/Infrastructure/                     ← реализации интерфе�
 
 app/Http/Controllers/  Menu Order Payment        только HTTP: валидация, вызов домена, JSON
 app/Console/Commands/Workers/  AbstractAmqpWorker → Barista Notify
-app/Providers/AppServiceProvider          7 биндингов — единственное место, где интерфейсы встречаются с реализациями
+app/Providers/AppServiceProvider          6 биндингов — единственное место, где интерфейсы встречаются с реализациями
 tests/  6 unit-классов (без Laravel) + 1 feature (без БД и брокера)</pre>
 <table>
 <tr><th></th><th>Касса на массивах (1.2)</th><th>Сейчас</th></tr>
@@ -2648,8 +2724,8 @@ tests/  6 unit-классов (без Laravel) + 1 feature (без БД и бр�
 
 <table>
 <tr><th>Тема</th><th>Что это</th><th>Связь с лабой</th><th>Почитать</th></tr>
-<tr><td>Outbox для <code>EventPublisher</code></td><td>события в таблицу в той же транзакции + relay</td><td>ещё одна реализация интерфейса из 5.1; контроллер не меняется — проверьте</td><td>ваш RabbitMQ Lab, раздел 5</td></tr>
-<tr><td>Идемпотентный воркер</td><td>дедупликация по message_id как декоратор/стратегия</td><td>«под капотом» 5.2; перенесите <code>IdempotentProcessor</code> из Worker Kit</td><td>OOP Lab — Worker Kit</td></tr>
+<tr><td>Outbox для <code>EventPublisher</code></td><td>события в таблицу в той же транзакции + relay</td><td>ещё одна реализация интерфейса из 5.1; контроллер не меняется — проверьте</td><td>встретите в RabbitMQ Lab, раздел 5</td></tr>
+<tr><td>Идемпотентный воркер</td><td>дедупликация по message_id как декоратор/стратегия</td><td>«под капотом» 5.2; сделайте сами — дедупликация по идентификатору сообщения</td><td>встретите в RabbitMQ Lab</td></tr>
 <tr><td>Обработчики вместо <code>process()</code> в воркере</td><td><code>PrepareOrderHandler</code>, <code>NotifyHandler</code> — классы, которые воркер только вызывает</td><td>вопрос 5.3; делает воркеры тестируемыми без AMQP</td><td>—</td></tr>
 <tr><td>Laravel Pipeline / middleware</td><td>встроенная цепочка обёрток</td><td>это Decorator замыканиями — сравните с <code>BeverageDecorator</code></td><td><a href="https://laravel.com/docs/13.x/helpers#pipeline" target="_blank">docs/helpers#pipeline</a></td></tr>
 <tr><td>Laravel Contracts и Manager</td><td>интерфейсы фреймворка + драйверы по конфигу</td><td>весь Laravel устроен как ваш <code>Notifier</code>: интерфейс + <code>match</code> по конфигу</td><td><a href="https://laravel.com/docs/13.x/contracts" target="_blank">docs/contracts</a></td></tr>
@@ -2657,7 +2733,7 @@ tests/  6 unit-классов (без Laravel) + 1 feature (без БД и бр�
 <tr><td>PHP 8.4: property hooks, asymmetric visibility</td><td><code>public private(set)</code>, геттеры в объявлении свойства</td><td>убрать часть методов-геттеров из <code>Order</code></td><td><a href="https://www.php.net/releases/8.4/ru.php" target="_blank">php.net/releases/8.4</a></td></tr>
 <tr><td>PHPStan level 8+</td><td>статический анализ</td><td>поймает <code>array</code> без типов элементов в <code>BestOf</code> и <code>publish()</code></td><td><a href="https://phpstan.org/user-guide/getting-started" target="_blank">phpstan.org</a></td></tr>
 <tr><td>DDD: агрегаты, доменные события, application layer</td><td>следующий уровень той же идеи Domain/Infrastructure</td><td>то, что вы сделали, — «лёгкий DDD»; книги дадут словарь</td><td>Вернон, «Implementing DDD», гл. 5–8</td></tr>
-<tr><td>Redis Lab</td><td>ваш следующий проект</td><td>кэш меню, лок на подготовку заказа, идемпотентность через SET NX — всё за интерфейсами</td><td>Redis_Lab_Plan.html</td></tr>
+<tr><td>Redis Lab</td><td>дальше по программе (после Чистого PHP и RabbitMQ Lab)</td><td>кэш меню, лок на подготовку заказа, идемпотентность через SET NX — всё за интерфейсами</td><td>встретите в методичке Redis Lab</td></tr>
 </table>
 
 </main>
