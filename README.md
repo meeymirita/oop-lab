@@ -33,4 +33,4 @@ Laravel 13 (PHP 8.4) + PostgreSQL 17 + RabbitMQ + Mailpit — брокер по�
 
 ---
 
-Часть сборного репозитория лабораторных работ — [submodule-group-lab](https://github.com/meeymirita/submodule-group-lab).
+Часть сборного репозитория лабораторных работ — [anitech-performance](https://github.com/meeymirita/anitech-performance).
