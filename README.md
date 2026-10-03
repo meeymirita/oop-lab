@@ -13,7 +13,7 @@
 
 ## Стек
 
-Laravel 13 (PHP 8.4) + PostgreSQL 17 + RabbitMQ + Mailpit — брокер появляется только в последней сессии.
+Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер появляется только в последней сессии.
 
 ## Формат
 
