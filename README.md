@@ -1,6 +1,6 @@
 # OOP Lab — Coffee Shop API
 
-![PHP](https://meeymirita-files.storage.yandexcloud.net/php-coffee/php.png)
+![PHP](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/php-coffee.png)
 
 > **24.09.2026 — методичка вычитана и исправлена.** Что найдено и что поправлено — в [fixes/backend/php-coffee.md](https://github.com/meeymirita/lab-fixes/blob/main/backend/php-coffee.md) репозитория `lab-fixes`.
 
