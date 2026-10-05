@@ -17,7 +17,7 @@ Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер по�
 
 ## Формат
 
-Методичка [`docs/php-coffee.html`](php-coffee.html) — открывается в браузере. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
+Методичка [`php-coffee.html`](php-coffee.html) ([открыть на сайте](https://anitech.meeymirita.ru/works/php-coffee.html)) — открывается в браузере. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
 
 ## Что внутри (5 сессий)
 
@@ -30,6 +30,10 @@ Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер по�
 Проходит через: 4 принципа ООП, `abstract class` vs `interface`, наследование vs композиция, паттерны (Factory, Decorator, Strategy, Repository), SOLID — всё на одном сквозном примере.
 
 Первая сессия с чистым PHP без фреймворка будет лежать в `laravel-app/lab0/` внутри Laravel-приложения (создаётся при прохождении; прежняя версия стёрта 26.09 — старт заново с шага 1.1).
+
+## Лицензия и авторство
+
+Код — MIT, тексты — CC BY 4.0, обложки и иллюстрации не покрыты (см. [LICENSE](LICENSE)). Кто что сделал: [NOTICE](NOTICE).
 
 ---
 
