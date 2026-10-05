@@ -17,7 +17,7 @@ Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер по�
 
 ## Формат
 
-Методичка [`docs/OOP_Lab_CoffeeShop.html`](docs/OOP_Lab_CoffeeShop.html) — открывается в браузере. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
+Методичка [`docs/php-coffee.html`](php-coffee.html) — открывается в браузере. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
 
 ## Что внутри (5 сессий)
 
